@@ -26,7 +26,7 @@ public class StarGenerator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+        if (Input.GetKeyDown(KeyCode.Space)) AddNewAreas(worldRadius + 20, 20);
 	}
 
 
@@ -36,33 +36,83 @@ public class StarGenerator : MonoBehaviour {
 
         for (int i = 0; i < starAmount; i++)
         {
-            bool _acceptedSpawn = false;
-
             Vector2 _pos = Random.insideUnitCircle * worldRadius;
 
 
-            int _loops = 0;
-            while(_acceptedSpawn == false)
+            bool _acceptedSpawn = true;
+
+            if(_previousSpawns.Count > 0)
             {
-                if (_loops > 10) break;
-
-                foreach (Vector2 _oldPos in _previousSpawns)
+                int _loops = 0;
+                _acceptedSpawn = false;
+                while (_acceptedSpawn == false)
                 {
+                    if (_loops > 40) break;
 
-                    if (Vector2.Distance(_pos, _oldPos) <= minDistance)
+                    foreach (Vector2 _oldPos in _previousSpawns)
                     {
-                        _pos = Random.insideUnitCircle * worldRadius;
+                        if (Vector2.Distance(_pos, _oldPos) <= minDistance)
+                        {
+                            _pos = Random.insideUnitCircle * worldRadius;
+                            break;
+                        }
+
+                        _acceptedSpawn = true;
                     }
 
-                    else _acceptedSpawn = true;
+                    _loops++;
                 }
-
-                _loops++;
             }
 
-            Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
-            _previousSpawns.Add(_pos);
+            if(_acceptedSpawn)
+            {
+                Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
+                _previousSpawns.Add(_pos);
+            }
+        }
+    }
 
+    void AddNewAreas(float _minRadius, float _starAmount)
+    {
+        List<Vector2> _previousSpawns = new List<Vector2>();
+
+        for (int i = 0; i < _starAmount; i++)
+        {
+            Vector2 _pos = Random.insideUnitCircle * (worldRadius + _minRadius);
+
+
+            bool _acceptedSpawn = true;
+
+            if(_previousSpawns.Count > 0)
+            {
+                int _loops = 0;
+                _acceptedSpawn = false;
+                while (_acceptedSpawn == false)
+                {
+                    if (_loops > 40) break;
+
+                    foreach (Vector2 _oldPos in _previousSpawns)
+                    {
+                        if (Vector2.Distance(_pos, _oldPos) <= minDistance || Vector2.Distance(_pos, Vector2.zero) <= _minRadius)
+                        {
+                            Debug.Log("Distance: " + Vector2.Distance(_pos, _oldPos));
+                            Debug.Log("minDistance: " + minDistance);
+                            _pos = Random.insideUnitCircle * (worldRadius + _minRadius);
+                            break;
+                        }
+
+                        _acceptedSpawn = true;
+                    }
+
+                    _loops++;
+                }
+            }
+
+            if(_acceptedSpawn)
+            {
+                Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
+                _previousSpawns.Add(_pos);
+            }
         }
 
     }
