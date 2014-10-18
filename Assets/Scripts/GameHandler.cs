@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class GameHandler : MonoBehaviour {
 
+    public static GameHandler Instance;
+
 	// get input touch
 	//if collides star set active
 	public GameObject SelectedStar; // each star keeps track of whats within range // if moving star then fire calculate range function on selection and keep doing it while selected
@@ -13,6 +15,12 @@ public class GameHandler : MonoBehaviour {
 	public int connectedStars; //if 0 earth is the SelectedStar and PreviousStar
 
 	public GameObject selectionSprite;
+
+    void Awake()
+    {
+        if (Instance) Destroy(this);
+        else Instance = this;
+    }
 
 	public void clickStar(GameObject starInput)
 	{

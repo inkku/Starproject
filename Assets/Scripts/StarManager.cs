@@ -8,9 +8,9 @@ public class StarManager : MonoBehaviour {
 
     [HideInInspector] public List<Star> allStars;
 
-    public List<float> starClassEnergies;
-    public List<float> starClassGravities;
-    public List<float> starClassProbabilities;
+    public float[] starClassEnergies = new float[10];
+    public float[] starClassGravities = new float[10];
+    public float[] starClassProbabilities = new float[10];
 
 	public bool clusterDivided;
 
@@ -25,7 +25,6 @@ public class StarManager : MonoBehaviour {
         StartCoroutine(UpdateStarAges(1f));
 		clusterDivided = false;
 	}
-
 
     IEnumerator UpdateStarAges(float _updateFreq)
     {

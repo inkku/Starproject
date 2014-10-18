@@ -9,7 +9,6 @@ public class Star : MonoBehaviour {
     public List<Star> connections;
 	public bool connected;
 	public float age;
-	public float range  ;
 	public float energy
 	{	  
         get
@@ -51,7 +50,7 @@ public class Star : MonoBehaviour {
             }
         }
     }
-    public float gravity
+    public float range
     {
         get
         {
@@ -95,7 +94,7 @@ public class Star : MonoBehaviour {
 
     void Awake()
     {
-        //Setup();
+        Setup();
     }
 
     void Setup()
@@ -104,16 +103,16 @@ public class Star : MonoBehaviour {
 
         int _rand = Random.Range(0, 101);
 
-        //     if (_rand <= StarManager.Instance.starClassProbabilities[0]) type = Type.cl0;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[1]) type = Type.cl1;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[2]) type = Type.cl2;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[3]) type = Type.cl3;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[4]) type = Type.cl4;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[5]) type = Type.cl5;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[6]) type = Type.cl6;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[7]) type = Type.cl7;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[8]) type = Type.cl8;
-        //else if (_rand <= StarManager.Instance.starClassProbabilities[9]) type = Type.cl9;
+        if (_rand <= StarManager.Instance.starClassProbabilities[0]) type = Type.cl0;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[1]) type = Type.cl1;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[2]) type = Type.cl2;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[3]) type = Type.cl3;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[4]) type = Type.cl4;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[5]) type = Type.cl5;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[6]) type = Type.cl6;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[7]) type = Type.cl7;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[8]) type = Type.cl8;
+        else if (_rand <= StarManager.Instance.starClassProbabilities[9]) type = Type.cl9;
 
 
         age = Random.Range(1, 13); //Age depends on startype? It should >.>
@@ -172,7 +171,7 @@ public class Star : MonoBehaviour {
 
 		foreach (Star _star in connections)
 		{
-			if(_newStar == _newStar)
+			if(_star == _newStar)
 			{
 				ans = true;
 			}
