@@ -65,8 +65,8 @@ public class StarInfoScreen : MonoBehaviour {
 
     void Update()
     {
-        if (GameHandler.Instance.SelectedStar)
-            selectedStar = GameHandler.Instance.SelectedStar.GetComponent<Star>();
+        if (GameHandler.Instance.currentStar)
+            selectedStar = GameHandler.Instance.currentStar;
         else selectedStar = null;
     }
 

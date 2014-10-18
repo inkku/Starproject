@@ -8,6 +8,7 @@ public class StarManager : MonoBehaviour {
 
     [HideInInspector] public List<Star> allStars;
 
+    public Texture2D[] starClasstextures = new Texture2D[10];
     public float[] starClassEnergies = new float[10];
     public float[] starClassGravities = new float[10];
     public float[] starClassProbabilities = new float[10];

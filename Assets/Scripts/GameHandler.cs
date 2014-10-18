@@ -8,13 +8,12 @@ public class GameHandler : MonoBehaviour {
 
 	// get input touch
 	//if collides star set active
-	public GameObject SelectedStar; // each star keeps track of whats within range // if moving star then fire calculate range function on selection and keep doing it while selected
-	public GameObject PreviousStar; // the star I just came from
-	public GameObject EarthStar;
+	public Star currentStar; // each star keeps track of whats within range // if moving star then fire calculate range function on selection and keep doing it while selected
+    public Star previousStar; // the star I just came from
 
 	public int connectedStars; //if 0 earth is the SelectedStar and PreviousStar
 
-	public GameObject selectionSprite;
+	//public GameObject selectionSprite;
 
     void Awake()
     {
@@ -22,92 +21,123 @@ public class GameHandler : MonoBehaviour {
         else Instance = this;
     }
 
-	public void clickStar(GameObject starInput)
+    void Start()
+    {
+        currentStar = StarManager.Instance.allStars[0];
+    }
+
+    void Update()
+    {
+        Star _star;
+        if (Input.GetKeyDown(KeyCode.Mouse0) && MouseIsHoveringOver<Star>(out _star))
+        {
+            ClickStar(_star.gameObject);
+        }
+    }
+
+	public void ClickStar(GameObject clickedObject)
 	{
-		Star starInputComp = starInput.GetComponent<Star>()as Star;
-		//print ( " currently selected star");
-		//print (selectedStar);
+        Star clickedStar = clickedObject.GetComponent<Star>() as Star;
+
 
 		//check if star is part of your network
-		if(starInputComp.connected)
+        if (clickedStar.connected)
 		{
-			//if part of network select
-			setPreviousStar(SelectedStar);
-			setSelectedStar(starInput);
+			//if part of network, select
+            SetPreviousStar(currentStar);
+            SetSelectedStar(clickedStar);
 		}
 
 		//if not part of network see if in range
-		else {			
-			List<Star> inReachOfSelected = getStarsInReach(SelectedStar);
-			print("in reach of selected");
-			print(inReachOfSelected);
+		else 
+        {
+            List<Star> inReach = GetStarsInReach(currentStar);
+
 			//if in range connect
-			if (inReachOfSelected.Contains(starInputComp) ){
-				setSelectedStar( starInput);
-				starInput.renderer.material.color = Color.red;
-				starInputComp.connected = true;
+            if (inReach.Contains(clickedStar))
+            {
+                SetSelectedStar(clickedStar);
+                clickedObject.renderer.material.color = Color.red;
+                clickedStar.connected = true;
 			}
 		}
 
+        if (previousStar != null)
+        {
+            if (previousStar.inMyConnections(currentStar) == false)
+            {
+                previousStar.connections.Add(currentStar);
+                currentStar.connections.Add(previousStar);
+                Debug.Log("New connection made.");
+            }
+        }
+	}
 
+	public void SetSelectedStar(Star _star)
+	{
+        currentStar = _star;
+        _star.TurnOnRing(2);
+    }
 
+	public void SetPreviousStar(Star _star)
+	{
+		previousStar = _star;
+        _star.TurnOffRing();
+	}
 
-			/*
-		_previous = _current;
-		_current = this.gameObject.GetComponent<Star>();
-		
-		Debug.Log("Pressed left click.");
-		this.renderer.material.color = Color.red; 
-		
-		if (_previous != null) 
-		{
-			if(!_previous.inMyConnections(_current))
+	public List<Star> GetStarsInReach (Star _selectedStar)
+	{
+		List<Star> _starsInReach = new List<Star>();
+
+        Vector3 _center = _selectedStar.transform.position;
+        float _radius = _selectedStar.GetComponent<Star>().range;
+        var _hitColliders = Physics.OverlapSphere(_center, _radius);
+
+        for (var i = 0; i < _hitColliders.Length; i++) 
+        {
+            if (_hitColliders[i].gameObject != currentStar.gameObject)
+            {
+                if (_hitColliders[i].GetComponent<Star>())
+                    _hitColliders[i].GetComponent<Star>().TurnOnRing(1);
+            }
+
+            GameObject _hit = _hitColliders[i].gameObject;
+            if ((_hit.GetComponent<Star>())) //if object is a star 
 			{
-				_previous.connections.Add (_current);
-				_current.connections.Add (_previous);
-				Debug.Log ("New connection made.");
-			}
-		}
-		*/
-	}
-
-	public void setSelectedStar(GameObject selStar)
-	{
-		SelectedStar = selStar;
-		selectionSprite.transform.position = SelectedStar.transform.position;
-	}
-
-	public void setPreviousStar(GameObject curStar)
-	{
-		PreviousStar = curStar;
-	}
-
-	public List<Star> getStarsInReach (GameObject centerStar)
-	{
-		List<Star> StarInReach = new List<Star>();
-
-		Vector3 center = centerStar.transform.position;
-		float radius = centerStar.GetComponent<Star>().range;		
-		var hitColliders = Physics.OverlapSphere(center, radius);		
-		for (var i = 0; i < hitColliders.Length; i++) {
-			//hitColliders[i].SendMessage("AddDamage");
-
-			//print (hitColliders[i]);
-			if (hitColliders[i].gameObject != SelectedStar)
-			hitColliders[i].gameObject.renderer.material.color = Color.blue; //shows who is in range
-
-
-			GameObject c = hitColliders[i].gameObject;
-			if((c.GetComponent<Star>() as Star) != null)//if object is a star 
-			{			
-				Star _star =c.GetComponent<Star>() as Star;
-				StarInReach.Add(_star);			
+                Star _star = _hit.GetComponent<Star>() as Star;
+                _starsInReach.Add(_star);			
 			}	
 		}
-		return StarInReach;
+        return _starsInReach;
 	}
 
-	void Update () {
-		
-	}
+
+    public bool MouseIsHoveringOver<T>() where T : Component
+    {
+        Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit _rayHit;
+        if (Physics.Raycast(_ray, out _rayHit, 1500f))
+        {
+            if (_rayHit.collider.GetComponent<T>())
+                return true;
+        }
+
+        return false;
+    }
+    public bool MouseIsHoveringOver<T>(out T _type) where T : Component
+    {
+        Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit _rayHit;
+        if (Physics.Raycast(_ray, out _rayHit, 1500f))
+        {
+            if (_rayHit.collider.GetComponent<T>())
+            {
+                _type = _rayHit.collider.GetComponent<T>();
+                return true;
+            }
+        }
+
+        _type = null;
+        return false;
+    }
 }

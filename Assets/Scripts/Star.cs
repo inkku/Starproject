@@ -92,8 +92,14 @@ public class Star : MonoBehaviour {
         }
     }
 
-    void Awake()
+    public GameObject dysonSphere;
+    public GameObject selectRing;
+    float selectRingScale;
+
+    void Start()
     {
+        selectRingScale = selectRing.transform.localScale.x;
+
         Setup();
     }
 
@@ -194,12 +200,10 @@ public class Star : MonoBehaviour {
 	}
 
 	void Update() 
- //* THIS IS NOT WORKING
-		//because they dont have any connections currently
-
-		//you wile have double conenctions so add something that makes you not add linerender on start and the conencted star but only one of them
 	{
-				
+        if (connections.Count > 0) dysonSphere.SetActive(true);
+        else dysonSphere.SetActive(false);		
+
 		foreach (Star _star in connections) 
 		{
 			LineRenderer line = this.gameObject.AddComponent<LineRenderer>();
@@ -213,4 +217,15 @@ public class Star : MonoBehaviour {
 		}
 	}
 
+    public void TurnOnRing(float _size)
+    {
+        selectRing.SetActive(true);
+        selectRing.transform.localScale = new Vector3(_size, _size, _size);
+    }
+
+    public void TurnOffRing()
+    {
+        selectRing.SetActive(false);
+        selectRing.transform.localScale = new Vector3(selectRingScale, selectRingScale, selectRingScale);
+    }
 }

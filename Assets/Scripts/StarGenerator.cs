@@ -16,19 +16,9 @@ public class StarGenerator : MonoBehaviour {
     {
         if (Instance) Destroy(this);
         else Instance = this;
-    }
 
-	// Use this for initialization
-	void Start () 
-    {
         GenerateNewWorld();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetKeyDown(KeyCode.Space)) AddNewAreas(worldRadius + 20, 20);
-	}
-
+    }
 
     void GenerateNewWorld()
     {
