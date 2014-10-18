@@ -127,6 +127,8 @@ public class Star : MonoBehaviour {
             GameObject _line = Instantiate(StarManager.Instance.lineDrawer, transform.position, Quaternion.identity) as GameObject;
             _line.GetComponent<LineDrawer>().Draw(this.gameObject, _star.gameObject);
         }
+
+        HandleStates();
     }
 
     void HandleStates()
