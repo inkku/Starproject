@@ -6,8 +6,12 @@ public class StarManager : MonoBehaviour {
 
     public static StarManager Instance;
 
-    [HideInInspector] public List<Star> allStars = new List<Star>();
+    [HideInInspector] public List<Star> allStars = new List<Star>(); //ALL ALL STARS
     [HideInInspector] public List<List<Star>> starClusters = new List<List<Star>>(); //Not used right now
+
+	public static float Score;
+	public static float ScoreMax;
+	public static float clusterBoost;
 
     public GameObject lineDrawer;
 
@@ -26,10 +30,45 @@ public class StarManager : MonoBehaviour {
 
 	void Start () 
     {
+		Score = ScoreMax = (float) 0;
+		clusterBoost = (float)1 ;
         //StartCoroutine(UpdateStarAges(1f));
 		clusterDivided = false;
 	}
 
+	void Update()
+	{
+//		Score = calculateScore(GameHandler.Instance.currentStar);
+	}
+
+
+	public float calculateScore(Star startNode)
+	{
+		float tempScore = sumEnergy(startNode);
+
+		if (!clusterDivided)
+		{
+			tempScore *= clusterBoost;
+		}
+
+		Debug.Log ("SCORE:" + tempScore);
+
+		return (float) tempScore;
+	}
+
+	public float sumEnergy(Star startNode)
+
+	{
+		List<Star> MyStarCluster = GetStarCluster (startNode);
+
+		float TotalEnergy = (float) 0;
+
+		foreach (Star _star in MyStarCluster)
+		{
+			TotalEnergy += _star.energy;
+		}
+		return TotalEnergy;
+	}
     //IEnumerator UpdateStarAges(float _updateFreq)
     //{
     //    for (; ;)
