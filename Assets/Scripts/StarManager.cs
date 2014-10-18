@@ -12,6 +12,8 @@ public class StarManager : MonoBehaviour {
     public List<float> starClassGravities;
     public List<float> starClassProbabilities;
 
+	private bool clusterDivided;
+
     void Awake()
     {
         if (Instance) Destroy(this);
@@ -21,6 +23,7 @@ public class StarManager : MonoBehaviour {
 	void Start () 
     {
         StartCoroutine(UpdateStarAges(1f));
+		clusterDivided = false;
 	}
 
 
@@ -36,4 +39,51 @@ public class StarManager : MonoBehaviour {
             yield return new WaitForSeconds(_updateFreq);
         }
     }
+
+	public List<Star> connectedStars (Star startNode) 
+	{
+
+		List<Star> connectedTemp = new List<Star>();
+
+		foreach (Star _star in allStars)
+		{
+			_star.connected = false;
+		}
+
+		this.FloodConnected(startNode);
+
+		foreach (Star _star in startNode.connections) 
+		{
+			if(_star.connected)
+			{
+				connectedTemp.Add(_star);
+			}
+			else
+			{
+				clusterDivided = true;
+		
+			}
+		}
+		return connectedTemp;
+	}
+
+
+
+
+
+
+	//************* private utility functions ************
+
+	private void FloodConnected(Star startNode)
+ 	{
+		startNode.connected = true;
+
+		foreach (Star _star in startNode.connections) 
+		{
+			if(!_star.connected)
+			{
+				FloodConnected(_star);
+			}
+		}
+	}
 }
