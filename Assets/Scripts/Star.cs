@@ -94,8 +94,9 @@ public class Star : MonoBehaviour {
     public GameObject dysonSphere;
     public GameObject selectRing;
     public float selectRingScale;
+    public GameObject lineDrawer;
 
-    //public LineRenderer line;
+    public List<LineDrawer> lines;
 
     public enum State
     { 
@@ -111,11 +112,6 @@ public class Star : MonoBehaviour {
     public bool current;
 
 
-    void Awake()
-    {
-        //line = GetComponent<LineRenderer>();
-    }
-
     void Start()
     {
         selectRingScale = selectRing.transform.localScale.x;
@@ -130,6 +126,14 @@ public class Star : MonoBehaviour {
 			Debug.DrawRay(_star.transform.position, this.transform.position);
             //LineRenderer line = gameObject.AddComponent<LineRenderer>();
             //line.SetPosition(1, _star.transform.position);
+
+			if (IsConnectionDrawn(_star))
+                continue;
+
+
+            GameObject _line = Instantiate(lineDrawer, transform.position, Quaternion.identity) as GameObject;
+            _line.GetComponent<LineDrawer>().Draw(_star.gameObject);
+            lines.Add(_line.GetComponent<LineDrawer>());
         }
     }
 
@@ -241,6 +245,20 @@ public class Star : MonoBehaviour {
     {
         selectRing.SetActive(false);
         selectRing.transform.localScale = new Vector3(selectRingScale, selectRingScale, selectRingScale);
+    }
+
+    bool IsConnectionDrawn(Star _star)
+    { 
+        if (lines.Count > 0)
+        { 
+            foreach(LineDrawer _line in lines)
+            {
+                if (_line.target == _star)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     public List<Star> GetReach()
