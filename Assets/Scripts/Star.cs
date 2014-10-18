@@ -98,6 +98,8 @@ public class Star : MonoBehaviour {
 
     void Setup()
     {
+        StarManager.Instance.allStars.Add(this);
+
         int _rand = Random.Range(0, 101);
 
              if (_rand <= StarManager.Instance.starClassProbabilities[0]) type = Type.cl0;
