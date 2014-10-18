@@ -7,8 +7,11 @@ public class GameHandler : MonoBehaviour {
 	// get input touch
 	//if collides star set active
 	public GameObject SelectedStar; // each star keeps track of whats within range // if moving star then fire calculate range function on selection and keep doing it while selected
+	public GameObject PreviousStar; // the star I just came from
 	public GameObject EarthStar;
-	public int connectedStars; //if 0 earth is the selectedstar
+
+	public int connectedStars; //if 0 earth is the SelectedStar and PreviousStar
+
 	public GameObject selectionSprite;
 
 	public void clickStar(GameObject starInput)
@@ -21,8 +24,10 @@ public class GameHandler : MonoBehaviour {
 		if(starInputComp.connected)
 		{
 			//if part of network select
-			setSelectedStar( starInput);
+			setPreviousStar(SelectedStar);
+			setSelectedStar(starInput);
 		}
+
 		//if not part of network see if in range
 		else {			
 			List<Star> inReachOfSelected = getStarsInReach(SelectedStar);
@@ -62,6 +67,11 @@ public class GameHandler : MonoBehaviour {
 	{
 		SelectedStar = selStar;
 		selectionSprite.transform.position = SelectedStar.transform.position;
+	}
+
+	public void setPreviousStar(GameObject curStar)
+	{
+		PreviousStar = curStar;
 	}
 
 	public List<Star> getStarsInReach (GameObject centerStar)
