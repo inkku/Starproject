@@ -6,7 +6,8 @@ public class StarManager : MonoBehaviour {
 
     public static StarManager Instance;
 
-    [HideInInspector] public List<Star> allStars;
+    [HideInInspector] public List<Star> allStars = new List<Star>();
+    [HideInInspector] public List<List<Star>> starClusters = new List<List<Star>>(); //Not used right now
 
     public Texture2D[] starClasstextures = new Texture2D[10];
     public float[] starClassEnergies = new float[10];
@@ -23,64 +24,60 @@ public class StarManager : MonoBehaviour {
 
 	void Start () 
     {
-        StartCoroutine(UpdateStarAges(1f));
+        //StartCoroutine(UpdateStarAges(1f));
 		clusterDivided = false;
 	}
 
-    IEnumerator UpdateStarAges(float _updateFreq)
-    {
-        for (; ;)
-        {
-            foreach (Star _star in allStars)
-            {
-                //Update age for each star
-            }
+    //IEnumerator UpdateStarAges(float _updateFreq)
+    //{
+    //    for (; ;)
+    //    {
+    //        foreach (Star _star in allStars)
+    //        {
+    //            //Update age for each star
+    //        }
 
-            yield return new WaitForSeconds(_updateFreq);
-        }
-    }
+    //        yield return new WaitForSeconds(_updateFreq);
+    //    }
+    //}
 
-	public List<Star> connectedStars (Star startNode) 
+	public List<Star> GetStarCluster (Star startNode) 
 	{
-
 		List<Star> connectedTemp = new List<Star>();
+
 
 		foreach (Star _star in allStars)
 		{
-			_star.connected = false;
+            _star.state = Star.State.NotConnected;
 		}
 
 		this.FloodConnected(startNode);
 
 		foreach (Star _star in startNode.connections) 
 		{
-			if(_star.connected)
+			if(_star.state == Star.State.Connected)
 			{
 				connectedTemp.Add(_star);
 			}
 			else
 			{
 				clusterDivided = true;
-		
 			}
 		}
+
 		return connectedTemp;
 	}
-
-
-
-
 
 
 	//************* private utility functions ************
 
 	private void FloodConnected(Star startNode)
  	{
-		startNode.connected = true;
+		startNode.state = Star.State.Connected;
 
 		foreach (Star _star in startNode.connections) 
 		{
-			if(!_star.connected)
+			if(_star.state == Star.State.Connected)
 			{
 				FloodConnected(_star);
 			}

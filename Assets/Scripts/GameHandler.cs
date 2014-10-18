@@ -6,14 +6,11 @@ public class GameHandler : MonoBehaviour {
 
     public static GameHandler Instance;
 
-	// get input touch
-	//if collides star set active
-	public Star currentStar; // each star keeps track of whats within range // if moving star then fire calculate range function on selection and keep doing it while selected
-    public Star previousStar; // the star I just came from
+	public Star currentStar;
+    public Star previousStar; 
 
-	public int connectedStars; //if 0 earth is the SelectedStar and PreviousStar
+	public int connectedStars; 
 
-	//public GameObject selectionSprite;
 
     void Awake()
     {
@@ -23,7 +20,8 @@ public class GameHandler : MonoBehaviour {
 
     void Start()
     {
-        currentStar = StarManager.Instance.allStars[0];
+        SetCurrentStar(StarManager.Instance.allStars[0]);
+        StartCoroutine(FindStarsInReach(0.5f));
     }
 
     void Update()
@@ -37,34 +35,18 @@ public class GameHandler : MonoBehaviour {
 
 	public void ClickStar(GameObject clickedObject)
 	{
-        Star clickedStar = clickedObject.GetComponent<Star>() as Star;
+        Star clickedStar = clickedObject.GetComponent<Star>();
 
 
-		//check if star is part of your network
-        if (clickedStar.connected)
+        if (clickedStar.state == Star.State.Connected || currentStar.starsInReach.Contains(clickedStar))
 		{
-			//if part of network, select
             SetPreviousStar(currentStar);
-            SetSelectedStar(clickedStar);
-		}
-
-		//if not part of network see if in range
-		else 
-        {
-            List<Star> inReach = GetStarsInReach(currentStar);
-
-			//if in range connect
-            if (inReach.Contains(clickedStar))
-            {
-                SetSelectedStar(clickedStar);
-                clickedObject.renderer.material.color = Color.red;
-                clickedStar.connected = true;
-			}
+            SetCurrentStar(clickedStar);
 		}
 
         if (previousStar != null)
         {
-            if (previousStar.inMyConnections(currentStar) == false)
+            if (previousStar.connections.Contains(currentStar) == false)
             {
                 previousStar.connections.Add(currentStar);
                 currentStar.connections.Add(previousStar);
@@ -73,44 +55,26 @@ public class GameHandler : MonoBehaviour {
         }
 	}
 
-	public void SetSelectedStar(Star _star)
-	{
-        currentStar = _star;
-        _star.TurnOnRing(2);
+    IEnumerator FindStarsInReach(float _updateFreq)
+    {
+        for (; ; )
+        {
+            currentStar.GetReach();
+            yield return new WaitForSeconds(_updateFreq);
+        }
     }
 
+    public void SetCurrentStar(Star _star)
+	{
+        currentStar = _star;
+        _star.state = Star.State.Connected;
+        currentStar.current = true;
+    }
 	public void SetPreviousStar(Star _star)
 	{
 		previousStar = _star;
-        _star.TurnOffRing();
+        previousStar.current = false;
 	}
-
-	public List<Star> GetStarsInReach (Star _selectedStar)
-	{
-		List<Star> _starsInReach = new List<Star>();
-
-        Vector3 _center = _selectedStar.transform.position;
-        float _radius = _selectedStar.GetComponent<Star>().range;
-        var _hitColliders = Physics.OverlapSphere(_center, _radius);
-
-        for (var i = 0; i < _hitColliders.Length; i++) 
-        {
-            if (_hitColliders[i].gameObject != currentStar.gameObject)
-            {
-                if (_hitColliders[i].GetComponent<Star>())
-                    _hitColliders[i].GetComponent<Star>().TurnOnRing(1);
-            }
-
-            GameObject _hit = _hitColliders[i].gameObject;
-            if ((_hit.GetComponent<Star>())) //if object is a star 
-			{
-                Star _star = _hit.GetComponent<Star>() as Star;
-                _starsInReach.Add(_star);			
-			}	
-		}
-        return _starsInReach;
-	}
-
 
     public bool MouseIsHoveringOver<T>() where T : Component
     {

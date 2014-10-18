@@ -7,7 +7,6 @@ public class Star : MonoBehaviour {
     public Type type;
 	
     public List<Star> connections;
-	public bool connected;
 	public float age;
 	public float energy
 	{	  
@@ -96,6 +95,27 @@ public class Star : MonoBehaviour {
     public GameObject selectRing;
     float selectRingScale;
 
+    //public LineRenderer line;
+
+    public enum State
+    { 
+        Connected,
+        LocallyConnected,
+        NotConnected
+    }
+
+    public State state = State.NotConnected;
+
+    public List<Star> starsInReach;
+
+    public bool current;
+
+
+    void Awake()
+    {
+        //line = GetComponent<LineRenderer>();
+    }
+
     void Start()
     {
         selectRingScale = selectRing.transform.localScale.x;
@@ -103,9 +123,50 @@ public class Star : MonoBehaviour {
         Setup();
     }
 
+    void Update()
+    {
+        foreach (Star _star in connections)
+        {
+            LineRenderer line = gameObject.AddComponent<LineRenderer>();
+            line.SetPosition(1, _star.transform.position);
+        }
+    }
+
+    void HandleStates()
+    { 
+        switch(state)
+        {
+            case State.NotConnected:
+                dysonSphere.SetActive(false);
+                TurnOffRing();
+                break;
+
+            case State.Connected:
+                dysonSphere.SetActive(true);
+
+                if (GameHandler.Instance.currentStar == this)
+                    TurnOnRing(2);
+                else if (GameHandler.Instance.currentStar.starsInReach.Contains(this))
+                    TurnOnRing(1);
+                else
+                    TurnOffRing();
+                break;
+
+            case State.LocallyConnected:
+                dysonSphere.SetActive(true);
+
+                if (GameHandler.Instance.currentStar.starsInReach.Contains(this))
+                    TurnOnRing(1);
+                else
+                    TurnOffRing();
+                break;
+        }
+    }
+
     void Setup()
     {
-        StarManager.Instance.allStars.Add(this);
+        if (StarManager.Instance.allStars.Contains(this) == false)
+            StarManager.Instance.allStars.Add(this);
 
         int _rand = Random.Range(0, 101);
 
@@ -169,54 +230,6 @@ public class Star : MonoBehaviour {
         //Setup graphics?
     }
 
-
-
-	public bool inMyConnections (Star _newStar)
-	{	
-		bool ans = false;
-
-		foreach (Star _star in connections)
-		{
-			if(_star == _newStar)
-			{
-				ans = true;
-			}
-		}
-
-		return ans;
-	}
-
-	public void getStarsInReach ()
-	{
-		Vector3 center = this.transform.position;
-		float radius = range;
-
-		var hitColliders = Physics.OverlapSphere(center, radius);
-		
-		for (var i = 0; i < hitColliders.Length; i++) {
-			//hitColliders[i].SendMessage("AddDamage");
-		}	
-
-	}
-
-	void Update() 
-	{
-        if (connections.Count > 0) dysonSphere.SetActive(true);
-        else dysonSphere.SetActive(false);		
-
-		foreach (Star _star in connections) 
-		{
-			LineRenderer line = this.gameObject.AddComponent<LineRenderer>();
-			line.SetWidth(10, 10);
-			line.SetVertexCount(2);
-			line.material = this.gameObject.renderer.material;
-			line.renderer.enabled = true;
-			line.SetPosition(0, _star.gameObject.transform.position);
-			line.SetPosition(1, this.gameObject.transform.position);
-			
-		}
-	}
-
     public void TurnOnRing(float _size)
     {
         selectRing.SetActive(true);
@@ -227,5 +240,30 @@ public class Star : MonoBehaviour {
     {
         selectRing.SetActive(false);
         selectRing.transform.localScale = new Vector3(selectRingScale, selectRingScale, selectRingScale);
+    }
+
+    public List<Star> GetReach()
+    {
+        starsInReach = new List<Star>();
+
+        var _hitColliders = Physics.OverlapSphere(transform.position, range);
+        for (var i = 0; i < _hitColliders.Length; i++)
+        {
+            GameObject _hit = _hitColliders[i].gameObject;
+
+            if ((_hit != gameObject && _hit.GetComponent<Star>())) //if object is a star 
+            {
+                Star _star = _hit.GetComponent<Star>();
+                starsInReach.Add(_star);
+            }
+        }
+
+        return starsInReach;
+    }
+
+    public bool IsInReach(Star _star)
+    {
+        GetReach();
+        return starsInReach.Contains(_star);
     }
 }
