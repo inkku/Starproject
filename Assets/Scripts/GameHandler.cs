@@ -10,6 +10,7 @@ public class GameHandler : MonoBehaviour {
 	public GameObject PreviousStar; // the star I just came from
 	public GameObject EarthStar;
 
+
 	public int connectedStars; //if 0 earth is the SelectedStar and PreviousStar
 
 	public GameObject selectionSprite;
@@ -38,6 +39,10 @@ public class GameHandler : MonoBehaviour {
 				setSelectedStar( starInput);
 				starInput.renderer.material.color = Color.red;
 				starInputComp.connected = true;
+				PreviousStar.connections.Add(SelectedStar);
+				SelectedStar.connections.Add(PreviousStar);
+
+//				PreviousStar.myLineRenderers.Add(LineRenderer connectingLine);
 			}
 		}
 
