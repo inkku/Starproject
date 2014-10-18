@@ -18,17 +18,10 @@ public class StarGenerator : MonoBehaviour {
         else Instance = this;
     }
 
-	// Use this for initialization
-	void Start () 
+    void Start()
     {
         GenerateNewWorld();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetKeyDown(KeyCode.Space)) AddNewAreas(worldRadius + 20, 20);
-	}
-
+    }
 
     void GenerateNewWorld()
     {
@@ -66,12 +59,15 @@ public class StarGenerator : MonoBehaviour {
 
             if(_acceptedSpawn)
             {
-                Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
+                object _tmp = Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
+                StarManager.Instance.allStars.Add((_tmp as GameObject).GetComponent<Star>());
+
                 _previousSpawns.Add(_pos);
             }
         }
-    }
 
+        StarManager.Instance.allStars[0].transform.position = Vector3.zero;
+    }
     void AddNewAreas(float _minRadius, float _starAmount)
     {
         List<Vector2> _previousSpawns = new List<Vector2>();
@@ -95,8 +91,6 @@ public class StarGenerator : MonoBehaviour {
                     {
                         if (Vector2.Distance(_pos, _oldPos) <= minDistance || Vector2.Distance(_pos, Vector2.zero) <= _minRadius)
                         {
-                            Debug.Log("Distance: " + Vector2.Distance(_pos, _oldPos));
-                            Debug.Log("minDistance: " + minDistance);
                             _pos = Random.insideUnitCircle * (worldRadius + _minRadius);
                             break;
                         }
@@ -110,10 +104,13 @@ public class StarGenerator : MonoBehaviour {
 
             if(_acceptedSpawn)
             {
-                Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
+                object _tmp = Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
+                StarManager.Instance.allStars.Add((_tmp as GameObject).GetComponent<Star>());
+
                 _previousSpawns.Add(_pos);
             }
         }
 
+        StarManager.Instance.allStars[0].transform.position = Vector3.zero;
     }
 }
