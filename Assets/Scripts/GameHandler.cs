@@ -24,10 +24,10 @@ public class GameHandler : MonoBehaviour {
 		else {			
 			List<Star> inReachOfSelected = getStarsInReach(SelectedStar);
 			print("in reach of selected");
-			print(inReachOfSelected);
+//			print(inReachOfSelected);
 			//if in range connect
 			if (inReachOfSelected.Contains(starInputComp) ){
-				setSelectedStar( starInput);
+//				setSelectedStar(starInputComp);
 				starInput.renderer.material.color = Color.red;
 				starInputComp.connected = true;
 				PreviousStar.connections.Add(SelectedStar);
