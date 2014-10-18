@@ -9,6 +9,8 @@ public class StarManager : MonoBehaviour {
     [HideInInspector] public List<Star> allStars = new List<Star>();
     [HideInInspector] public List<List<Star>> starClusters = new List<List<Star>>(); //Not used right now
 
+    public GameObject lineDrawer;
+
     public Texture2D[] starClasstextures = new Texture2D[10];
     public float[] starClassEnergies = new float[10];
     public float[] starClassGravities = new float[10];

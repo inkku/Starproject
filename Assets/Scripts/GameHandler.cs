@@ -11,7 +11,7 @@ public class GameHandler : MonoBehaviour {
 	public Star currentStar;
     public Star previousStar; 
 
-	public int connectedStars; 
+
 
 
     void Awake()
@@ -20,22 +20,22 @@ public class GameHandler : MonoBehaviour {
         else Instance = this;
     }
 
-		//if not part of network see if in range
-		else {			
-			List<Star> inReachOfSelected = getStarsInReach(SelectedStar);
-			print("in reach of selected");
-//			print(inReachOfSelected);
-			//if in range connect
-			if (inReachOfSelected.Contains(starInputComp) ){
-//				setSelectedStar(starInputComp);
-				starInput.renderer.material.color = Color.red;
-				starInputComp.connected = true;
-				PreviousStar.connections.Add(SelectedStar);
-				SelectedStar.connections.Add(PreviousStar);
+//        //if not part of network see if in range
+//        else {			
+//            List<Star> inReachOfSelected = getStarsInReach(SelectedStar);
+//            print("in reach of selected");
+////			print(inReachOfSelected);
+//            //if in range connect
+//            if (inReachOfSelected.Contains(starInputComp) ){
+////				setSelectedStar(starInputComp);
+//                starInput.renderer.material.color = Color.red;
+//                starInputComp.connected = true;
+//                PreviousStar.connections.Add(SelectedStar);
+//                SelectedStar.connections.Add(PreviousStar);
 
-//				PreviousStar.myLineRenderers.Add(LineRenderer connectingLine);
-			}
-		}
+////				PreviousStar.myLineRenderers.Add(LineRenderer connectingLine);
+//            }
+//        }
     void Start()
     {
         SetCurrentStar(StarManager.Instance.allStars[0]);

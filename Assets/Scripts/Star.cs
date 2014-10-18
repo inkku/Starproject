@@ -93,10 +93,7 @@ public class Star : MonoBehaviour {
 
     public GameObject dysonSphere;
     public GameObject selectRing;
-    public GameObject lineDrawer;
     float selectRingScale;
-
-    public List<LineDrawer> lines;
 
     public enum State
     { 
@@ -126,10 +123,8 @@ public class Star : MonoBehaviour {
             if (IsConnectionDrawn(_star))
                 continue;
 
-
-            GameObject _line = Instantiate(lineDrawer, transform.position, Quaternion.identity) as GameObject;
-            _line.GetComponent<LineDrawer>().Draw(_star.gameObject);
-            lines.Add(_line.GetComponent<LineDrawer>());
+            GameObject _line = Instantiate(StarManager.Instance.lineDrawer, transform.position, Quaternion.identity) as GameObject;
+            _line.GetComponent<LineDrawer>().Draw(this.gameObject, _star.gameObject);
         }
     }
 
@@ -245,11 +240,12 @@ public class Star : MonoBehaviour {
 
     bool IsConnectionDrawn(Star _star)
     { 
-        if (lines.Count > 0)
+        if (LineDrawer.all.Count > 0)
         { 
-            foreach(LineDrawer _line in lines)
+            foreach(LineDrawer _line in LineDrawer.all)
             {
-                if (_line.target == _star)
+                if (_line.target == _star.gameObject && _line.origin == gameObject ||
+                    _line.target == gameObject && _line.origin == _star.gameObject)
                     return true;
             }
         }
