@@ -3,23 +3,24 @@ using System.Collections;
 
 public class MouseInput : MonoBehaviour {
 
-	Star _current;
-	Star _previous;
+	//Star _current;
+	//Star _previous;
+	public GameHandler InputManaging;
 
-	// Use this for initialization
+
 	void Start () {
-		_current = null;
-		_previous = null;
+		InputManaging = GameObject.Find("GameHandlers").GetComponent<GameHandler>();
 	}
-	
-	// Update is called once per frame
+
+	/*
 	void Update () {
 	
-	
-	}
+	}*/
 
 	void OnMouseDown() {
 
+		InputManaging.clickStar(gameObject);
+		/*
 		_previous = _current;
 		_current = this.gameObject.GetComponent<Star>();
 		
@@ -35,6 +36,6 @@ public class MouseInput : MonoBehaviour {
 				Debug.Log ("New connection made.");
 			}
 		}
-
+*/
 	}
 }

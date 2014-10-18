@@ -7,8 +7,9 @@ public class Star : MonoBehaviour {
     public Type type;
 	
     public List<Star> connections;
-    public bool connected;
-    public float age;
+	public bool connected;
+	public float age;
+	public float range  ;
 	public float energy
 	{	  
         get
@@ -94,7 +95,7 @@ public class Star : MonoBehaviour {
 
     void Awake()
     {
-        Setup();
+        //Setup();
     }
 
     void Setup()
@@ -180,8 +181,24 @@ public class Star : MonoBehaviour {
 		return ans;
 	}
 
-/*	void Update() 
- * THIS IS NOT WORKING
+	public void getStarsInReach ()
+	{
+		Vector3 center = this.transform.position;
+		float radius = range;
+
+		var hitColliders = Physics.OverlapSphere(center, radius);
+		
+		for (var i = 0; i < hitColliders.Length; i++) {
+			//hitColliders[i].SendMessage("AddDamage");
+		}	
+
+	}
+
+	void Update() 
+ //* THIS IS NOT WORKING
+		//because they dont have any connections currently
+
+		//you wile have double conenctions so add something that makes you not add linerender on start and the conencted star but only one of them
 	{
 				
 		foreach (Star _star in connections) 
@@ -195,6 +212,6 @@ public class Star : MonoBehaviour {
 			line.SetPosition(1, this.gameObject.transform.position);
 			
 		}
-	}*/
+	}
 
 }
