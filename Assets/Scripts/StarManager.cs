@@ -16,10 +16,11 @@ public class StarManager : MonoBehaviour {
 
     public GameObject lineDrawer;
 
-    public Texture2D[] starClasstextures = new Texture2D[10];
-    public float[] starClassEnergies = new float[10];
-    public float[] starClassGravities = new float[10];
-    public float[] starClassProbabilities = new float[10];
+    public Texture2D[] starClasstextures = new Texture2D[7];
+    public float[] starClassSizes = new float[7];
+    public float[] starClassEnergies = new float[7];
+    public float[] starClassGravities = new float[7];
+    public float[] starClassProbabilities = new float[7];
 
 	public bool clusterDivided;
 

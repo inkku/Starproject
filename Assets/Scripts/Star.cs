@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Star : MonoBehaviour {
 
-    public enum Type { cl0, cl1, cl2, cl3, cl4, cl5, cl6, cl7, cl8, cl9 }
+    public enum Type { cl0, cl1, cl2, cl3, cl4, cl5, cl6 }
     public Type type;
 	
     public List<Star> connections;
@@ -38,15 +38,6 @@ public class Star : MonoBehaviour {
                 case Type.cl6:
                     return StarManager.Instance.starClassEnergies[6];
 
-                case Type.cl7:
-                    return StarManager.Instance.starClassEnergies[7];
-
-                case Type.cl8:
-                    return StarManager.Instance.starClassEnergies[8];
-
-                case Type.cl9:
-                    return StarManager.Instance.starClassEnergies[9];
-
                 default:
                     return 0;
             }
@@ -79,15 +70,6 @@ public class Star : MonoBehaviour {
                 case Type.cl6:
                     return StarManager.Instance.starClassGravities[6];
 
-                case Type.cl7:
-                    return StarManager.Instance.starClassGravities[7];
-
-                case Type.cl8:
-                    return StarManager.Instance.starClassGravities[8];
-
-                case Type.cl9:
-                    return StarManager.Instance.starClassGravities[9];
-
                 default:
                     return 0;
             }
@@ -97,7 +79,6 @@ public class Star : MonoBehaviour {
     public GameObject dysonSphere;
     public GameObject selectRing;
     float selectRingScale;
-    public GameObject lineDrawer;
 
     public enum State
     { 
@@ -136,12 +117,16 @@ public class Star : MonoBehaviour {
     }
 
     void HandleStates()
-    { 
+    {
         switch(state)
         {
             case State.NotConnected:
                 dysonSphere.SetActive(false);
-                TurnOffRing();
+
+                if (GameHandler.Instance.currentStar.starsInReach.Contains(this))
+                    TurnOnRing(1);
+                else
+                    TurnOffRing();
                 break;
 
             case State.Connected:
@@ -180,63 +165,67 @@ public class Star : MonoBehaviour {
         else if (_rand <= StarManager.Instance.starClassProbabilities[4]) type = Type.cl4;
         else if (_rand <= StarManager.Instance.starClassProbabilities[5]) type = Type.cl5;
         else if (_rand <= StarManager.Instance.starClassProbabilities[6]) type = Type.cl6;
-        else if (_rand <= StarManager.Instance.starClassProbabilities[7]) type = Type.cl7;
-        else if (_rand <= StarManager.Instance.starClassProbabilities[8]) type = Type.cl8;
-        else if (_rand <= StarManager.Instance.starClassProbabilities[9]) type = Type.cl9;
-
-
-        age = Random.Range(1, 13); //Age depends on startype? It should >.>
 
         switch (type)
         {
             case Type.cl0:
-                name = "Type-O Star";
+                name = "Type-M Star";
+                transform.localScale *= StarManager.Instance.starClassSizes[0];
+                age = Random.Range(0, 13);
+                renderer.material.color = new Color(1, 0.160f, 0.1f); //red
                 break;
 
             case Type.cl1:
-                name = "Type-B Star";
+                name = "Type-K Star";
+                transform.localScale *= StarManager.Instance.starClassSizes[1];
+                age = Random.Range(0, 13);
+                renderer.material.color = new Color(1, 0.5f, 0.1f); //orange
                 break;
-
+                
             case Type.cl2:
-                name = "Type-A Star";
+                name = "Type-G Star";
+                transform.localScale *= StarManager.Instance.starClassSizes[2];
+                age = Random.Range(0, 9);
+                renderer.material.color = new Color(1, 0.8f, 0.1f); //yellow
                 break;
 
             case Type.cl3:
                 name = "Type-F Star";
+                transform.localScale *= StarManager.Instance.starClassSizes[3];
+                age = Random.Range(0, 5);
+                renderer.material.color = Color.white;
                 break;
 
             case Type.cl4:
-                name = "Type-G Star";
+                name = "Type-A Star";
+                transform.localScale *= StarManager.Instance.starClassSizes[4];
+                age = Random.Range(0, 4);
+                renderer.material.color = new Color(0.94f, 0.97f, 0.97f); //white-ish
                 break;
 
             case Type.cl5:
-                name = "Type-K Star";
+                name = "Type-B Star";
+                transform.localScale *= StarManager.Instance.starClassSizes[5];
+                age = Random.Range(0, 3);
+                renderer.material.color = new Color(0.75f, 0.95f, 0.95f); //cyan
                 break;
+
 
             case Type.cl6:
-                name = "Type-M Star";
-                break;
-
-            case Type.cl7:
-                name = "Type-L Star";
-                break;
-
-            case Type.cl8:
-                name = "Type-T Star";
-                break;
-
-            case Type.cl9:
-                name = "Type-Y Star";
+                name = "Type-O Star";
+                transform.localScale *= StarManager.Instance.starClassSizes[6];
+                age = Random.Range(0, 2);
+                renderer.material.color = new Color(0.33f, 0.64f, 0.89f); //blue
                 break;
         }
 
-        //Setup graphics?
+        selectRing.renderer.material.color = renderer.material.color;
     }
 
     public void TurnOnRing(float _size)
     {
         selectRing.SetActive(true);
-        selectRing.transform.localScale = new Vector3(_size, _size, _size);
+        selectRing.transform.localScale = new Vector3(_size * 0.3f, _size * 0.3f, _size * 0.3f);
     }
 
     public void TurnOffRing()
