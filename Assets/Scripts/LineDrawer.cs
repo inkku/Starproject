@@ -19,6 +19,8 @@ public class LineDrawer : MonoBehaviour {
     {
         origin = _origin;
         target = _target;
+        line.material = new Material(Shader.Find("Particles/Additive"));
+        line.SetColors(_origin.renderer.material.color, _target.renderer.material.color);
         line.SetPosition(0, origin.transform.position);
         line.SetPosition(1, target.transform.position);
     }
