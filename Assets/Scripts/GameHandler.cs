@@ -70,7 +70,7 @@ public class GameHandler : MonoBehaviour {
 	public void LeftClickStar(GameObject clickedObject)
 	{
 		// If within reach && within system -> show stat window
-		clickedObject.renderer.material.color=Color.red;
+		//clickedObject.renderer.material.color = Color.red;
 
 	}
 

@@ -184,43 +184,43 @@ public class Star : MonoBehaviour {
         switch (type)
         {
             case Type.cl0:
-                name = "Class O Star";
+                name = "Type-O Star";
                 break;
 
             case Type.cl1:
-                name = "Class B Star";
+                name = "Type-B Star";
                 break;
 
             case Type.cl2:
-                name = "Class A Star";
+                name = "Type-A Star";
                 break;
 
             case Type.cl3:
-                name = "Class F Star";
+                name = "Type-F Star";
                 break;
 
             case Type.cl4:
-                name = "Class G Star";
+                name = "Type-G Star";
                 break;
 
             case Type.cl5:
-                name = "Class K Star";
+                name = "Type-K Star";
                 break;
 
             case Type.cl6:
-                name = "Class M Star";
+                name = "Type-M Star";
                 break;
 
             case Type.cl7:
-                name = "Class L Star";
+                name = "Type-L Star";
                 break;
 
             case Type.cl8:
-                name = "Class T Star";
+                name = "Type-T Star";
                 break;
 
             case Type.cl9:
-                name = "Class Y Star";
+                name = "Type-Y Star";
                 break;
         }
 

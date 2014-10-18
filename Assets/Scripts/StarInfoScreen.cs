@@ -3,82 +3,70 @@ using System.Collections;
 
 public class StarInfoScreen : MonoBehaviour {
 
-    public Vector2 position;
     public float windowWidth;
     public Vector2 padding;
     public Vector2 margin;
 
 
-    Star selectedStar;
+    Star hoverStar;
     Rect windowRect;
     Rect nameRect;
-    float nameHeight = 10;
+    float nameHeight = 20;
     Rect ageRect;
     Rect gravityRect;
-    Rect gravityValRect;
 
 
     void Awake()
     {
-        nameHeight /= Screen.height;
-
         windowRect = new Rect
             (
-                position.x / Screen.width,
-                position.y / Screen.height,
-                windowWidth / Screen.width,
-                (nameHeight * 2) + (padding.y * 2) + margin.y / Screen.height
+                Screen.width - (windowWidth + padding.x),
+                Screen.height - ((nameHeight * 3) + padding.y + margin.y + 50),
+                windowWidth,
+                (nameHeight * 3) + (padding.y * 3) + margin.y
             );
 
         nameRect = new Rect
             (
                 windowRect.x + padding.x,
                 windowRect.y + padding.y,
-                windowRect.width * 0.75f - padding.x,
+                windowRect.width,
                 nameHeight
             );
 
         ageRect = new Rect
             (
-                windowRect.width * 0.75f,
-                nameRect.y,
-                windowRect.width * 0.25f,
+                nameRect.x,
+                nameRect.yMax + margin.y,
+                windowRect.width,
                 nameHeight
             );
 
         gravityRect = new Rect
             (
                 nameRect.x,
-                nameRect.xMax + margin.x,
+                ageRect.yMax + margin.y,
                 nameRect.width,
                 nameRect.height
-            );
-
-        gravityValRect = new Rect
-            (
-                ageRect.x,
-                gravityRect.y,
-                ageRect.width,
-                ageRect.height
             );
     }
 
     void Update()
     {
-        if (GameHandler.Instance.currentStar)
-            selectedStar = GameHandler.Instance.currentStar;
-        else selectedStar = null;
+
+
+        
+        
     }
 
     void OnGUI()
     {
-        if(selectedStar)
+        if (GameHandler.Instance.MouseIsHoveringOver<Star>(out hoverStar))
         {
             GUI.Box(windowRect, "");
-            GUI.Label(nameRect, selectedStar.name);
-            GUI.Label(ageRect, selectedStar.age.ToString());
-            GUI.Label(gravityRect, "Gravity");
-            GUI.Label(gravityValRect, selectedStar.range.ToString());
+            GUI.Label(nameRect, hoverStar.name);
+            GUI.Label(ageRect, hoverStar.age.ToString() + " billion years old");
+            GUI.Label(gravityRect, hoverStar.range.ToString() + "G");
         }
     }
 }
