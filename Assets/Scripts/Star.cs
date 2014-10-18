@@ -93,7 +93,7 @@ public class Star : MonoBehaviour {
 
     public GameObject dysonSphere;
     public GameObject selectRing;
-    float selectRingScale;
+    public float selectRingScale;
 
     //public LineRenderer line;
 
@@ -127,8 +127,9 @@ public class Star : MonoBehaviour {
     {
         foreach (Star _star in connections)
         {
-            LineRenderer line = gameObject.AddComponent<LineRenderer>();
-            line.SetPosition(1, _star.transform.position);
+			Debug.DrawRay(_star.transform.position, this.transform.position);
+            //LineRenderer line = gameObject.AddComponent<LineRenderer>();
+            //line.SetPosition(1, _star.transform.position);
         }
     }
 
