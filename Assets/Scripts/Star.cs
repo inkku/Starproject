@@ -94,7 +94,6 @@ public class Star : MonoBehaviour {
     public GameObject dysonSphere;
     public GameObject selectRing;
     float selectRingScale;
-    public float selectRingScale;
     public GameObject lineDrawer;
 
     public enum State
@@ -122,10 +121,6 @@ public class Star : MonoBehaviour {
     {
         foreach (Star _star in connections)
         {
-			Debug.DrawRay(_star.transform.position, this.transform.position);
-            //LineRenderer line = gameObject.AddComponent<LineRenderer>();
-            //line.SetPosition(1, _star.transform.position);
-
 			if (IsConnectionDrawn(_star))
                 continue;
 

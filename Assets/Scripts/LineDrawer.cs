@@ -25,6 +25,7 @@ public class LineDrawer : MonoBehaviour {
 
     public void Stop()
     {
+        line.SetPosition(0, transform.position);
         line.SetPosition(1, transform.position);
     }
 }
