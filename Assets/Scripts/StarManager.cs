@@ -12,6 +12,7 @@ public class StarManager : MonoBehaviour {
 	public static float Score;
 	public static float ScoreMax;
 	public static float clusterBoost;
+	public static float reachForce;
 
     public GameObject lineDrawer;
 
@@ -34,13 +35,17 @@ public class StarManager : MonoBehaviour {
 		clusterBoost = (float)1 ;
         //StartCoroutine(UpdateStarAges(1f));
 		clusterDivided = false;
+		reachForce = 1;
 	}
 
 	void Update()
 	{
-//		Score = calculateScore(GameHandler.Instance.currentStar);
+		float tempScore=calculateScore(GameHandler.Instance.currentStar);
+		Debug.Log ("SCORE:" + tempScore);
+
 	}
 
+	
 
 	public float calculateScore(Star startNode)
 	{
@@ -56,19 +61,10 @@ public class StarManager : MonoBehaviour {
 		return (float) tempScore;
 	}
 
-	public float sumEnergy(Star startNode)
 
-	{
-		List<Star> MyStarCluster = GetStarCluster (startNode);
 
-		float TotalEnergy = (float) 0;
 
-		foreach (Star _star in MyStarCluster)
-		{
-			TotalEnergy += _star.energy;
-		}
-		return TotalEnergy;
-	}
+
     //IEnumerator UpdateStarAges(float _updateFreq)
     //{
     //    for (; ;)
@@ -82,43 +78,79 @@ public class StarManager : MonoBehaviour {
     //    }
     //}
 
+
 	public List<Star> GetStarCluster (Star startNode) 
 	{
 		List<Star> connectedTemp = new List<Star>();
 
-
 		foreach (Star _star in allStars)
 		{
-            _star.state = Star.State.NotConnected;
+            _star.reached = false;
 		}
 
 		this.FloodConnected(startNode);
 
-		foreach (Star _star in startNode.connections) 
+		foreach (Star _star in allStars) 
 		{
-			if(_star.state == Star.State.Connected)
+			if(_star.reached)
 			{
 				connectedTemp.Add(_star);
 			}
-			else
-			{
-				clusterDivided = true;
-			}
 		}
 
+		Debug.Log ("GetStarCluster: number of all connecteds in current network " + connectedTemp.Count);
 		return connectedTemp;
 	}
 
 
+
+	public float sumEnergy(Star startNode)
+		
+	{
+		List<Star> MyStarCluster = GetStarCluster (startNode);
+		
+		float TotalEnergy = (float) 0;
+		
+		foreach (Star _star in MyStarCluster)
+		{
+			TotalEnergy += _star.energy;
+		}
+		return TotalEnergy;
+	}
+	
+	
+	public float totalNumConnections(Star startNode)		
+	{
+		List<Star> MyStarCluster = GetStarCluster (startNode);
+		
+		float numConnections = (float) 0;
+		float lengthConnections = (float) 0;
+		
+		foreach (Star _star in MyStarCluster)
+		{
+			numConnections += _star.connections.Count;
+			
+			foreach (Star s in _star.connections)
+			{
+				lengthConnections += Vector3.Distance (s.transform.position, _star.transform.position);
+			}
+			
+		}
+		//return lengthConnections /2;
+		Debug.Log ("totalNumConnections in whole cluster: " + numConnections/2);
+		return numConnections / 2;
+	}
+
 	//************* private utility functions ************
+
 
 	private void FloodConnected(Star startNode)
  	{
-		startNode.state = Star.State.Connected;
+		startNode.reached=true;
 
 		foreach (Star _star in startNode.connections) 
 		{
-			if(_star.state == Star.State.Connected)
+			if(!_star.reached)
 			{
 				FloodConnected(_star);
 			}

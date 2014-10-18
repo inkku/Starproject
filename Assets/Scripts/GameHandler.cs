@@ -7,7 +7,7 @@ public class GameHandler : MonoBehaviour {
     public static GameHandler Instance;
 
 
-	public int connectedStars;
+//	public int connectedStars;
 	public Star currentStar;
     public Star previousStar; 
 
@@ -21,6 +21,7 @@ public class GameHandler : MonoBehaviour {
     void Start()
     {
         SetCurrentStar(StarManager.Instance.allStars[0]);
+		Debug.Log ("AGE: " + currentStar.age);
         StartCoroutine(FindStarsInReach(0.5f));
     }
 
@@ -30,13 +31,11 @@ public class GameHandler : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Mouse0) && MouseIsHoveringOver<Star>(out _star))
         {
             LeftClickStar(_star.gameObject);
-			Debug.Log ("Leftclick on star");
         }
 
 		else if (Input.GetKeyDown(KeyCode.Mouse1) && MouseIsHoveringOver<Star>(out _star))
 		{
 			RightClickStar(_star.gameObject);
-			Debug.Log ("Rightclick on star");
 
 		}
 
@@ -49,22 +48,20 @@ public class GameHandler : MonoBehaviour {
 		// Om inte connected till previous: connect
 		// Om inte i systemet: nada
 
-        Star clickedStar = clickedObject.GetComponent<Star>();
+	    Star clickedStar = clickedObject.GetComponent<Star>();
 
-		if (clickedStar.state == Star.State.Connected || currentStar.starsInReach.Contains(clickedStar))
+		// within reach
+		if (currentStar.starsInReach.Contains(clickedStar))
 		{
-            SetPreviousStar(currentStar);
-            SetCurrentStar(clickedStar);
-			Debug.DrawLine (currentStar.transform.position, clickedStar.transform.position);
-		}
+			SetPreviousStar(currentStar);
+			SetCurrentStar(clickedStar);
 
-		if (previousStar && previousStar.connections.Contains(currentStar) == false)
-		{
-			previousStar.connections.Add(currentStar);
-			currentStar.connections.Add(previousStar);
-			Debug.Log("New connection made.");
+			if (previousStar.connections.Contains(currentStar) == false)
+			{
+				previousStar.connections.Add(currentStar);
+				currentStar.connections.Add(previousStar);
+			}
 		}
-
 	}
 
 	public void LeftClickStar(GameObject clickedObject)

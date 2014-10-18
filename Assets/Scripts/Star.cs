@@ -8,7 +8,10 @@ public class Star : MonoBehaviour {
 	
     public List<Star> connections;
 	public float age;
+	public bool reached;
+
 	public float energy
+
 	{	  
         get
         {
@@ -113,6 +116,7 @@ public class Star : MonoBehaviour {
     void Start()
     {
         selectRingScale = selectRing.transform.localScale.x;
+		connections = new List<Star>();
 
         Setup();
     }
@@ -259,6 +263,14 @@ public class Star : MonoBehaviour {
     public List<Star> GetReach()
     {
         starsInReach = new List<Star>();
+		float reachForce = 0;
+
+		float connections = StarManager.Instance.totalNumConnections (this);
+//		if (StarManager.Instance.sumConnections(this) > 0) {
+//			reachForce = StarManager.Instance.sumEnergy (this) / StarManager.Instance.sumConnections (this);
+//		}
+
+		Debug.Log ("ReachForce: " + reachForce);
 
         var _hitColliders = Physics.OverlapSphere(transform.position, range);
         for (var i = 0; i < _hitColliders.Length; i++)
