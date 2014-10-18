@@ -58,7 +58,7 @@ public class GameHandler : MonoBehaviour {
 			Debug.DrawLine (currentStar.transform.position, clickedStar.transform.position);
 		}
 
-		if (previousStar.connections.Contains(currentStar) == false)
+		if (previousStar && previousStar.connections.Contains(currentStar) == false)
 		{
 			previousStar.connections.Add(currentStar);
 			currentStar.connections.Add(previousStar);
