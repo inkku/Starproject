@@ -7,6 +7,7 @@ public class Star : MonoBehaviour {
     public Type type;
 
     public List<Star> connections;
+    public bool connected;
     public float age;
     public float energy
     {
@@ -114,7 +115,50 @@ public class Star : MonoBehaviour {
         else if (_rand <= StarManager.Instance.starClassProbabilities[9]) type = Type.cl9;
 
 
-        age = Random.Range(1, 13);
+        age = Random.Range(1, 13); //Age depends on startype? It should >.>
+
+        switch (type)
+        {
+            case Type.cl0:
+                name = "Class O Star";
+                break;
+
+            case Type.cl1:
+                name = "Class B Star";
+                break;
+
+            case Type.cl2:
+                name = "Class A Star";
+                break;
+
+            case Type.cl3:
+                name = "Class F Star";
+                break;
+
+            case Type.cl4:
+                name = "Class G Star";
+                break;
+
+            case Type.cl5:
+                name = "Class K Star";
+                break;
+
+            case Type.cl6:
+                name = "Class M Star";
+                break;
+
+            case Type.cl7:
+                name = "Class L Star";
+                break;
+
+            case Type.cl8:
+                name = "Class T Star";
+                break;
+
+            case Type.cl9:
+                name = "Class Y Star";
+                break;
+        }
 
         //Setup graphics?
     }
