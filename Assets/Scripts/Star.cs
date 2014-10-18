@@ -5,12 +5,12 @@ public class Star : MonoBehaviour {
 
     public enum Type { cl0, cl1, cl2, cl3, cl4, cl5, cl6, cl7, cl8, cl9 }
     public Type type;
-
+	
     public List<Star> connections;
     public bool connected;
     public float age;
-    public float energy
-    {
+	public float energy
+	{	  
         get
         {
             switch (type)
@@ -162,4 +162,39 @@ public class Star : MonoBehaviour {
 
         //Setup graphics?
     }
+
+
+
+	public bool inMyConnections (Star _newStar)
+	{	
+		bool ans = false;
+
+		foreach (Star _star in connections)
+		{
+			if(_newStar == _newStar)
+			{
+				ans = true;
+			}
+		}
+
+		return ans;
+	}
+
+/*	void Update() 
+ * THIS IS NOT WORKING
+	{
+				
+		foreach (Star _star in connections) 
+		{
+			LineRenderer line = this.gameObject.AddComponent<LineRenderer>();
+			line.SetWidth(10, 10);
+			line.SetVertexCount(2);
+			line.material = this.gameObject.renderer.material;
+			line.renderer.enabled = true;
+			line.SetPosition(0, _star.gameObject.transform.position);
+			line.SetPosition(1, this.gameObject.transform.position);
+			
+		}
+	}*/
+
 }

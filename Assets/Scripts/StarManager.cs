@@ -12,7 +12,7 @@ public class StarManager : MonoBehaviour {
     public List<float> starClassGravities;
     public List<float> starClassProbabilities;
 
-	private bool clusterDivided;
+	public bool clusterDivided;
 
     void Awake()
     {

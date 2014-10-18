@@ -62,6 +62,8 @@ public class StarGenerator : MonoBehaviour {
 
             Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
             _previousSpawns.Add(_pos);
+
         }
+
     }
 }
