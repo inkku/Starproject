@@ -171,42 +171,42 @@ public class Star : MonoBehaviour {
             case Type.cl0:
                 name = "Type-M Star";
                 transform.localScale *= StarManager.Instance.starClassSizes[0];
-                age = Random.Range(0, 13);
+                age = Random.Range(0, 13.0f);
                 renderer.material.color = new Color(1, 0.160f, 0.1f); //red
                 break;
 
             case Type.cl1:
                 name = "Type-K Star";
                 transform.localScale *= StarManager.Instance.starClassSizes[1];
-                age = Random.Range(0, 13);
+                age = Random.Range(0, 13.0f);
                 renderer.material.color = new Color(1, 0.5f, 0.1f); //orange
                 break;
                 
             case Type.cl2:
                 name = "Type-G Star";
                 transform.localScale *= StarManager.Instance.starClassSizes[2];
-                age = Random.Range(0, 9);
+                age = Random.Range(0, 9.0f);
                 renderer.material.color = new Color(1, 0.8f, 0.1f); //yellow
                 break;
 
             case Type.cl3:
                 name = "Type-F Star";
                 transform.localScale *= StarManager.Instance.starClassSizes[3];
-                age = Random.Range(0, 5);
+                age = Random.Range(0, 5.0f);
                 renderer.material.color = Color.white;
                 break;
 
             case Type.cl4:
                 name = "Type-A Star";
                 transform.localScale *= StarManager.Instance.starClassSizes[4];
-                age = Random.Range(0, 4);
+                age = Random.Range(0, 4.0f);
                 renderer.material.color = new Color(0.94f, 0.97f, 0.97f); //white-ish
                 break;
 
             case Type.cl5:
                 name = "Type-B Star";
                 transform.localScale *= StarManager.Instance.starClassSizes[5];
-                age = Random.Range(0, 3);
+                age = Random.Range(0, 3.0f);
                 renderer.material.color = new Color(0.75f, 0.95f, 0.95f); //cyan
                 break;
 
@@ -214,7 +214,7 @@ public class Star : MonoBehaviour {
             case Type.cl6:
                 name = "Type-O Star";
                 transform.localScale *= StarManager.Instance.starClassSizes[6];
-                age = Random.Range(0, 2);
+                age = Random.Range(0, 2.0f);
                 renderer.material.color = new Color(0.33f, 0.64f, 0.89f); //blue
                 break;
         }

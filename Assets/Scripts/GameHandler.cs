@@ -125,6 +125,9 @@ public class GameHandler : MonoBehaviour {
         currentStar = _star;
         _star.state = Star.State.Connected;
         currentStar.current = true;
+
+        //Camera.main.GetComponent<SmoothFollow>().target = currentStar.transform;
+        //Camera.main.GetComponent<SmoothLookAt>().target = currentStar.transform;
     }
 
 	public void SetPreviousStar(Star _star)
