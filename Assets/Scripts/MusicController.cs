@@ -35,6 +35,7 @@ public class MusicController : MonoBehaviour {
 		myAudioStems = new AudioSource[6];
 		for (int i=0; i<6; i++)
 		{
+
 			myAudioStems[i]=gameObject.AddComponent("AudioSource") as AudioSource;
 			myAudioStems[i].clip = (AudioClip) myclips[i];
 
@@ -43,10 +44,16 @@ public class MusicController : MonoBehaviour {
 				myAudioStems[i].Play ();
 			}
 		}
+
 		beatTimer = 0;
 
+		foreach (AudioSource s in myAudioStems) {
+			s.loop = true;
+			s.panLevel = 0;
+			s.dopplerLevel = 0;
+				}
 
-	
+		stemVol [2] = 1;
 	}
 	
 	// Update is called once per frame
@@ -54,6 +61,11 @@ public class MusicController : MonoBehaviour {
 
 				beatTimer += Time.deltaTime;
 
+		for (int i=0; i<6; i++) {
+			myAudioStems [i].volume = stemVol [i];
+
+		}
+	
 				// UPDATES ON BEAT
 				if (beatTimer >= pulse) 
 				{
@@ -63,7 +75,6 @@ public class MusicController : MonoBehaviour {
 					for (int i=0; i<6; i++) {
 						if (onBeat [i]) {	
 							myAudioStems [i].volume = (float)stemVol [i];
-						}
 					}
 				}
 
