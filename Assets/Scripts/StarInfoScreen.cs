@@ -65,7 +65,7 @@ public class StarInfoScreen : MonoBehaviour {
         {
             GUI.Box(windowRect, "");
             GUI.Label(nameRect, hoverStar.name);
-            GUI.Label(ageRect, hoverStar.age.ToString("F2") + " billion years old");
+            GUI.Label(ageRect, (hoverStar.ageXten / 10).ToString("F2") + " billion years old");
             GUI.Label(gravityRect, hoverStar.range.ToString() + "G");
         }
     }

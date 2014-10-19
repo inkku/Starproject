@@ -7,7 +7,7 @@ public class StarManager : MonoBehaviour {
     public static StarManager Instance;
 
     [HideInInspector] public List<Star> allStars = new List<Star>(); //ALL ALL STARS
-    [HideInInspector] public List<List<Star>> starClusters = new List<List<Star>>(); //Not used right now
+    [HideInInspector] public List<Star> discoveredStars = new List<Star>();
 
 	public static float Score;
 	public static float ScoreMax;
@@ -15,14 +15,16 @@ public class StarManager : MonoBehaviour {
 	public static float reachForce;
 
     public GameObject lineDrawer;
+    public ParticleSystem fx_Death1;
+    public ParticleSystem fx_Death2;
 
-    public Texture2D[] starClasstextures = new Texture2D[7];
     public float[] starClassSizes = new float[7];
     public float[] starClassEnergies = new float[7];
+    public Vector2[] starClassLifespans = new Vector2[7];
     public float[] starClassGravities = new float[7];
     public float[] starClassProbabilities = new float[7];
 
-	public bool clusterDivided;
+	[HideInInspector] public bool clusterDivided;
 
     void Awake()
     {
@@ -34,7 +36,7 @@ public class StarManager : MonoBehaviour {
     {
 		Score = ScoreMax = (float) 0;
 		clusterBoost = (float)1 ;
-        //StartCoroutine(UpdateStarAges(1f));
+        StartCoroutine(UpdateStarAges(0.3f));
 		clusterDivided = false;
 		reachForce = 1;
 	}
@@ -43,7 +45,6 @@ public class StarManager : MonoBehaviour {
 	{
 		float tempScore=calculateScore(GameHandler.Instance.currentStar);
 		Debug.Log ("SCORE:" + tempScore);
-
 	}
 
 	
@@ -66,18 +67,26 @@ public class StarManager : MonoBehaviour {
 
 
 
-    //IEnumerator UpdateStarAges(float _updateFreq)
-    //{
-    //    for (; ;)
-    //    {
-    //        foreach (Star _star in allStars)
-    //        {
-    //            //Update age for each star
-    //        }
+    IEnumerator UpdateStarAges(float _updateFreq)
+    {
+        for (; ; )
+        {
+            for (int i = 0; i < allStars.Count; i++)
+            {
+                if (allStars[i].unDiscovered)
+                    continue;
 
-    //        yield return new WaitForSeconds(_updateFreq);
-    //    }
-    //}
+                allStars[i].ageXten += Time.deltaTime;
+
+                if (allStars[i].ageXten > StarManager.Instance.starClassLifespans[allStars[i].typeNum].y)
+                {
+                    StartCoroutine(allStars[i].Die(1f));
+                }
+            }
+
+            yield return new WaitForSeconds(_updateFreq);
+        }
+    }
 
 
 	public List<Star> GetStarCluster (Star startNode) 
