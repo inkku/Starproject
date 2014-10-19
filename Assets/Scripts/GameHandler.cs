@@ -41,7 +41,7 @@ public class GameHandler : MonoBehaviour {
 
     }
 
-	public void RightClickStar(GameObject clickedObject)
+	public void LeftClickStar(GameObject clickedObject)
 	{
 
 		// Om i systemet: välj och gå till
@@ -50,8 +50,7 @@ public class GameHandler : MonoBehaviour {
 
 	    Star clickedStar = clickedObject.GetComponent<Star>();
 
-		// within reach
-		if (currentStar.starsInReach.Contains(clickedStar))
+		if(currentStar.connections.Contains(clickedStar) || (currentStar.starsInReach.Contains(clickedStar)))
 		{
 			SetPreviousStar(currentStar);
 			SetCurrentStar(clickedStar);
@@ -64,7 +63,7 @@ public class GameHandler : MonoBehaviour {
 		}
 	}
 
-	public void LeftClickStar(GameObject clickedObject)
+	public void RightClickStar(GameObject clickedObject)
 	{
 		// If within reach && within system -> show stat window
 		//clickedObject.renderer.material.color = Color.red;

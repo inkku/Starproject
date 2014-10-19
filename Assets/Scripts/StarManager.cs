@@ -22,6 +22,13 @@ public class StarManager : MonoBehaviour {
     public float[] starClassGravities = new float[7];
     public float[] starClassProbabilities = new float[7];
 
+		
+	//PARAMETERS THAT DRIVE THE MUSIC
+	public int[] nrStarsOfType;
+	public int[] nrStarsOfTypeWithinRange;
+	
+	public float EnergyMax;
+
 	public bool clusterDivided;
 
     void Awake()
@@ -37,12 +44,20 @@ public class StarManager : MonoBehaviour {
         //StartCoroutine(UpdateStarAges(1f));
 		clusterDivided = false;
 		reachForce = 1;
+		EnergyMax = 0;
 	}
 
 	void Update()
 	{
 		float tempScore=calculateScore(GameHandler.Instance.currentStar);
 		Debug.Log ("SCORE:" + tempScore);
+
+		if (sumEnergy (GameHandler.Instance.currentStar) > EnergyMax) {
+			EnergyMax = sumEnergy (GameHandler.Instance.currentStar);
+		}
+
+		nrStarsOfType = calculateTypes(this.GetStarCluster(GameHandler.Instance.currentStar));
+		nrStarsOfTypeWithinRange = calculateTypes (GameHandler.Instance.currentStar.GetReach());
 
 	}
 
@@ -99,7 +114,7 @@ public class StarManager : MonoBehaviour {
 			}
 		}
 
-		Debug.Log ("GetStarCluster: number of all connecteds in current network " + connectedTemp.Count);
+//		Debug.Log ("GetStarCluster: number of all connecteds in current network " + connectedTemp.Count);
 		return connectedTemp;
 	}
 
@@ -138,9 +153,10 @@ public class StarManager : MonoBehaviour {
 			
 		}
 		//return lengthConnections /2;
-		Debug.Log ("totalNumConnections in whole cluster: " + numConnections/2);
+//		Debug.Log ("totalNumConnections in whole cluster: " + numConnections/2);
 		return numConnections / 2;
 	}
+
 
 	//************* private utility functions ************
 
@@ -156,5 +172,18 @@ public class StarManager : MonoBehaviour {
 				FloodConnected(_star);
 			}
 		}
+	}
+
+	private int[] calculateTypes(List<Star> starCollection)
+	{
+		int[] resultList= new int[7];
+
+		foreach (Star _star in starCollection)
+		{
+			resultList[(int)_star.type]+=1;
+		}
+
+		Debug.Log ("starCollection result list " + resultList.ToString ());
+		return resultList;
 	}
 }
