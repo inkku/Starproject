@@ -32,6 +32,7 @@ public class StarManager : MonoBehaviour {
         clusterDivided = false;
 
         StartCoroutine(StarManager.Instance.UpdateStarAges(0.3f));
+        StartCoroutine(CheckForPauseReach(0.1f));
 	}
 
     IEnumerator UpdateStarAges(float _updateFreq)
@@ -43,7 +44,7 @@ public class StarManager : MonoBehaviour {
                 if (allStars[i].unDiscovered)
                     continue;
 
-                allStars[i].ageXten += Time.deltaTime;
+                allStars[i].ageXten += Time.deltaTime / 2;
 
                 if (allStars[i].ageXten > StarManager.Instance.starClassLifespans[allStars[i].typeNum].y)
                 {
@@ -75,7 +76,7 @@ public class StarManager : MonoBehaviour {
 			}
 		}
 
-		Debug.Log ("GetStarCluster: number of all connecteds in current network " + connectedTemp.Count);
+		//Debug.Log ("GetStarCluster: number of all connecteds in current network " + connectedTemp.Count);
 		return connectedTemp;
 	}
 
@@ -95,7 +96,7 @@ public class StarManager : MonoBehaviour {
 	}
 	
 	
-	public float totalNumConnections(Star startNode)		
+	public float TotalNumConnections(Star startNode)		
 	{
 		List<Star> MyStarCluster = GetStarCluster (startNode);
 		
@@ -113,9 +114,24 @@ public class StarManager : MonoBehaviour {
 			
 		}
 		//return lengthConnections /2;
-		Debug.Log ("totalNumConnections in whole cluster: " + numConnections/2);
+		//Debug.Log ("totalNumConnections in whole cluster: " + numConnections/2);
 		return numConnections / 2;
 	}
+
+    IEnumerator CheckForPauseReach(float _updateFreq)
+    {
+        for (; ; )
+        {
+            Star.pauseReach = false;
+            foreach (Star _star in StarManager.Instance.allStars)
+            {
+                if (_star.state == Star.State.Dying)
+                    Star.pauseReach = true;
+            }
+
+            yield return new WaitForSeconds(_updateFreq);
+        }
+    }
 
 	//************* private utility functions ************
 

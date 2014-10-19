@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Star : MonoBehaviour {
 
+    public static bool pauseReach = false;
+
     public enum Type { cl0, cl1, cl2, cl3, cl4, cl5, cl6 }
     public Type type;
     public int typeNum;
@@ -52,12 +54,12 @@ public class Star : MonoBehaviour {
     {
         foreach (Star _star in connections)
         {
-			if (IsConnectionDrawn(_star))
+            if (IsConnectionDrawn(_star))
                 continue;
 
             GameObject _line = Instantiate(StarManager.Instance.lineDrawer, transform.position, Quaternion.identity) as GameObject;
             _line.GetComponent<LineDrawer>().Draw(this.gameObject, _star.gameObject);
-        }
+        }     
 
         HandleStates();
     }
@@ -126,6 +128,7 @@ public class Star : MonoBehaviour {
         if (StarManager.Instance.allStars.Contains(this) == false)
             StarManager.Instance.allStars.Add(this);
 
+        
         int _rand = Random.Range(0, 101);
 
         if (_rand <= StarManager.Instance.starClassProbabilities[0]) type = Type.cl0;
@@ -218,35 +221,35 @@ public class Star : MonoBehaviour {
     {
         starsInReach = new List<Star>();
 
-        if (state != State.Dying) //Ugly, yes. Working, yes.
+        float reachForce = 0;
+
+        float connections = StarManager.Instance.TotalNumConnections(this);
+        //		if (StarManager.Instance.sumConnections(this) > 0) {
+        //			reachForce = StarManager.Instance.sumEnergy (this) / StarManager.Instance.sumConnections (this);
+        //		}
+
+        ////Debug.Log("ReachForce: " + reachForce);
+
+        var _hitColliders = Physics.OverlapSphere(transform.position, range);
+        for (var i = 0; i < _hitColliders.Length; i++)
         {
-            float reachForce = 0;
+            GameObject _hit = _hitColliders[i].gameObject;
 
-            float connections = StarManager.Instance.totalNumConnections(this);
-            //		if (StarManager.Instance.sumConnections(this) > 0) {
-            //			reachForce = StarManager.Instance.sumEnergy (this) / StarManager.Instance.sumConnections (this);
-            //		}
-
-            Debug.Log("ReachForce: " + reachForce);
-
-            var _hitColliders = Physics.OverlapSphere(transform.position, range);
-            for (var i = 0; i < _hitColliders.Length; i++)
+            if ((_hit != gameObject && _hit.GetComponent<Star>()))
             {
-                GameObject _hit = _hitColliders[i].gameObject;
+                Star _star = _hit.GetComponent<Star>();
+                starsInReach.Add(_star);
 
-                if ((_hit != gameObject && _hit.GetComponent<Star>())) //if object is a star 
+
+                if (_star.unDiscovered)
                 {
-                    Star _star = _hit.GetComponent<Star>();
-                    starsInReach.Add(_star);
-
-
-                    if (_star.unDiscovered)
-                    {
-                        _star.Discover();
-                    }
+                    _star.Discover();
                 }
             }
         }
+
+        if (starsInReach.Contains(GameHandler.Instance.previousStar) == false)
+            starsInReach.Add(GameHandler.Instance.previousStar);
 
         return starsInReach;
     }
@@ -294,6 +297,10 @@ public class Star : MonoBehaviour {
         }
 
         UnloadConnections();
+
+        if (GameHandler.Instance.currentStar == this)
+            GameHandler.Instance.state = GameHandler.GameState.Dead;
+
         Destroy(gameObject);
     }
 
@@ -308,8 +315,9 @@ public class Star : MonoBehaviour {
 
         for (int i = 0; i < LineDrawer.all.Count; i++)
         {
-            if (LineDrawer.all[i].target == this || LineDrawer.all[i].origin == this)
+            if (LineDrawer.all[i].target == gameObject || LineDrawer.all[i].origin == gameObject)
             {
+                LineDrawer.all[i].Stop();
                 Destroy(LineDrawer.all[i]);
                 LineDrawer.all.RemoveAt(i);
                 i--;

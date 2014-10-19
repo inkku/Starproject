@@ -1,4 +1,5 @@
 var target : Transform;
+var minDistance = 10.0;
 var distance = 10.0;
 
 var xSpeed = 250.0;
@@ -25,7 +26,12 @@ function Start () {
 function LateUpdate () {
 
     if(Input.GetAxis("Mouse ScrollWheel"))
-        distance += (Input.GetAxis("Mouse ScrollWheel") * 30) * -1;
+    {
+        if(distance >= minDistance)
+            distance += (Input.GetAxis("Mouse ScrollWheel") * 30) * -1;
+
+        else distance = minDistance;
+    }
 
     if(gameObject.GetComponent(SmoothFollow) && gameObject.GetComponent(SmoothFollow).target)
         target = gameObject.GetComponent(SmoothFollow).target;

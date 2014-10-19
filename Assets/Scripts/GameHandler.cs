@@ -6,6 +6,14 @@ public class GameHandler : MonoBehaviour {
 
     public static GameHandler Instance;
 
+    public enum GameState
+    { 
+        Alive,
+        Dead
+    }
+
+    public GameState state = GameState.Alive;
+
 	[HideInInspector] public Star currentStar;
     [HideInInspector] public Star previousStar;
 
@@ -24,7 +32,7 @@ public class GameHandler : MonoBehaviour {
     void Start()
     {
         SetCurrentStar(StarManager.Instance.allStars[0]);
-        Debug.Log("AGE: " + currentStar.ageXten);
+        //Debug.Log("AGE: " + currentStar.ageXten);
         StartCoroutine(FindStarsInReach(0.5f));
 
         Score = ScoreMax = (float)0;
@@ -37,13 +45,17 @@ public class GameHandler : MonoBehaviour {
         if (currentStar.state != Star.State.Dying)
         {
             Star _star;
-            if (Input.GetKeyDown(KeyCode.Mouse0) && MouseIsHoveringOver<Star>(out _star))
+            if (Input.GetKeyDown(KeyCode.Mouse0) && MouseIsHoveringOverStar(out _star))
             {
                 LeftClickStar(_star.gameObject);
             }
 
-            float tempScore = CalculateScore(GameHandler.Instance.currentStar);
-            Debug.Log("SCORE:" + tempScore);
+            GameHandler.Score = CalculateScore(GameHandler.Instance.currentStar);
+
+            if (GameHandler.Score > GameHandler.ScoreMax)
+                GameHandler.ScoreMax = GameHandler.Score;
+
+            //Debug.Log("SCORE:" + tempScore);
         }
     }
 
@@ -82,7 +94,7 @@ public class GameHandler : MonoBehaviour {
             tempScore *= clusterBoost;
         }
 
-        Debug.Log("SCORE:" + tempScore);
+        //Debug.Log("SCORE:" + tempScore);
 
         return (float)tempScore;
     }
@@ -97,39 +109,65 @@ public class GameHandler : MonoBehaviour {
 		}
 	}
 
-	public bool MouseIsHoveringOver<T>() where T : Component
-	{
-		Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit _rayHit;
-		if (Physics.Raycast(_ray, out _rayHit, 1500f))
-		{
-			if (_rayHit.collider.GetComponent<T>())
-				return true;
-		}
-		
-		return false;
-	}
+    //public bool MouseIsHoveringOver<T>() where T : Component
+    //{
+    //    Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //    RaycastHit _rayHit;
+    //    if (Physics.Raycast(_ray, out _rayHit, 1500f))
+    //    {
+    //        if (_rayHit.collider.GetComponent<T>())
+    //            return true;
+    //    }
 
-	public bool MouseIsHoveringOver<T>(out T _type) where T : Component
-	{
-		Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit _rayHit;
-		if (Physics.Raycast(_ray, out _rayHit, 1500f))
-		{
-			if (_rayHit.collider.GetComponent<T>())
-			{
-				_type = _rayHit.collider.GetComponent<T>();
-				return true;
-			}
-		}
-		
-		_type = null;
-		return false;
-	}
+    //    return false;
+    //}
 
+    //public bool MouseIsHoveringOver<T>(out T _type) where T : Component
+    //{
+    //    Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //    RaycastHit _rayHit;
+    //    if (Physics.Raycast(_ray, out _rayHit, 1500f))
+    //    {
+    //        if (_rayHit.collider.GetComponent<T>())
+    //        {
+    //            _type = _rayHit.collider.GetComponent<T>();
+    //            return true;
+    //        }
+    //    }
 
+    //    _type = null;
+    //    return false;
+    //}
 
+    public bool MouseIsHoveringOverStar()
+    {
+        Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit _rayHit;
+        if (Physics.Raycast(_ray, out _rayHit, 1500f))
+        {
+            if (_rayHit.collider.transform.parent.GetComponent<Star>())
+                return true;
+        }
 
+        return false;
+    }
+
+    public bool MouseIsHoveringOverStar(out Star _star)
+    {
+        Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit _rayHit;
+        if (Physics.Raycast(_ray, out _rayHit, 1500f))
+        {
+            if (_rayHit.collider.transform.parent.GetComponent<Star>())
+            {
+                _star = _rayHit.collider.transform.parent.GetComponent<Star>();
+                return true;
+            }
+        }
+
+        _star = null;
+        return false;
+    }
 
 	//************ HOUSEKEEPING ************
 	
