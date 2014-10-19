@@ -83,8 +83,8 @@ public class Star : MonoBehaviour {
             case State.NotConnected:
                 dysonSphere.SetActive(false);
 
-                if (GameHandler.Instance.currentStar.starsInReach.Contains(this))
-                    TurnOnRing(1);
+			if (GameHandler.Instance.currentStar.starsInReach.Contains(this))
+				TurnOnRing(1);
                 else
                     TurnOffRing();
                 break;
@@ -97,8 +97,8 @@ public class Star : MonoBehaviour {
 
                 if (GameHandler.Instance.currentStar == this)
                     TurnOnRing(2);
-                else if (GameHandler.Instance.currentStar.starsInReach.Contains(this))
-                    TurnOnRing(1);
+			else if (GameHandler.Instance.currentStar.starsInReach.Contains(this) || (GameHandler.Instance.previousStar == this))
+				TurnOnRing(1);
                 else
                     TurnOffRing();
                 break;
