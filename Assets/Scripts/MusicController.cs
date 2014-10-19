@@ -67,10 +67,10 @@ public class MusicController : MonoBehaviour {
 
 		mix1 = new float[] {0f, 0f, 1f, 0f, 0f, 0f};
 		mix2 = new float[] {0f, 0.6f, 1f, 0.2f, 0f, 0.3f};
-		mix3 = new float[] {0f, 1f, 0.8f, 0.6f, 0.4f, 0.75f};
-		mix4 = new float[] {0.6f, 1f, 0.6f, 0.8f, 0.8f, 1f};
-		mix5 = new float[] {0.8f, 1f, 0.3f, 1f, 1f, 1f};
-		mix6 = new float[] {1f, 1f, 0.2f, 1f, 1f, 1f};
+		mix3 = new float[] {0f, 0.8f, 0.8f, 0.6f, 0.4f, 0.75f};
+		mix4 = new float[] {0.6f, 0.8f, 0.6f, 0.8f, 0.8f, 1f};
+		mix5 = new float[] {0.8f, 0.8f, 0.3f, 1f, 1f, 1f};
+		mix6 = new float[] {1f, 0.8f, 0.2f, 1f, 1f, 1f};
 	}
 	
 	// Update is called once per frame
