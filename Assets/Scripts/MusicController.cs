@@ -61,13 +61,16 @@ public class MusicController : MonoBehaviour {
 
 				beatTimer += Time.deltaTime;
 
+
+
+
 		for (int i=0; i<6; i++) {
 			myAudioStems [i].volume = stemVol [i];
 
 		}
-	
+	/*
 				// UPDATES ON BEAT
-				if (beatTimer >= pulse) 
+				/if (beatTimer >= pulse) 
 				{
 					beatTimer = (float)0;
 					Debug.Log ("BEAT");
@@ -85,7 +88,8 @@ public class MusicController : MonoBehaviour {
 							myAudioStems [i].volume = (float) stemVol [i];
 					}
 				}
-		}
+		} */
+
 //		foreach( audioTrack in myTrackList) {
 
 //		global styrning
@@ -112,5 +116,5 @@ public class MusicController : MonoBehaviour {
 */
 
 	
-
+	}
 }
