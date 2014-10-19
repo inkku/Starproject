@@ -28,6 +28,7 @@ public class Star : MonoBehaviour {
     public GameObject selectRing;
     float selectRingScale;
 
+
     public enum State
     { 
         Connected,
@@ -287,6 +288,8 @@ public class Star : MonoBehaviour {
                 _lock = true;
                 ParticleSystem _pSys1 = Instantiate(StarManager.Instance.fx_Death1, transform.position, Quaternion.identity) as ParticleSystem;
                 ParticleSystem _pSys2 = Instantiate(StarManager.Instance.fx_Death2, transform.position, Quaternion.identity) as ParticleSystem;
+
+				audio.Play();
 
                 _pSys1.Play();
                 _pSys2.Play();
