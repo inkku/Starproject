@@ -24,7 +24,6 @@ public class GameHandler : MonoBehaviour {
     void Start()
     {
         SetCurrentStar(StarManager.Instance.allStars[0]);
-        Debug.Log("AGE: " + currentStar.ageXten);
         StartCoroutine(FindStarsInReach(0.5f));
 
         Score = ScoreMax = (float)0;
@@ -43,7 +42,7 @@ public class GameHandler : MonoBehaviour {
             }
 
             float tempScore = CalculateScore(GameHandler.Instance.currentStar);
-            Debug.Log("SCORE:" + tempScore);
+//            Debug.Log("SCORE:" + tempScore);
         }
     }
 
