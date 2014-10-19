@@ -15,7 +15,8 @@ public class StarManager : MonoBehaviour {
 
     public Vector2[] starClassSizes = new Vector2[7];
     public float[] starClassEnergies = new float[7];
-    public Vector2[] starClassLifespans = new Vector2[7];
+    public Vector2[] starClassAges = new Vector2[7];
+    public float[] starClassLifespans = new float[7];
     public float[] starClassGravities = new float[7];
     public float[] starClassProbabilities = new float[7];
 
@@ -44,9 +45,9 @@ public class StarManager : MonoBehaviour {
                 if (allStars[i].unDiscovered)
                     continue;
 
-                allStars[i].ageXten += Time.deltaTime / 2;
+                allStars[i].ageXten += Time.deltaTime * 2;
 
-                if (allStars[i].ageXten > StarManager.Instance.starClassLifespans[allStars[i].typeNum].y)
+                if (allStars[i].ageXten > StarManager.Instance.starClassLifespans[allStars[i].typeNum])
                 {
                     StartCoroutine(allStars[i].Die(1f));
                 }

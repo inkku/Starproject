@@ -53,20 +53,6 @@ public class Star : MonoBehaviour {
 
     void Update()
     {
-        foreach (Star _star in connections)
-        {
-            if (IsConnectionDrawn(_star))
-                continue;
-
-            GameObject _line = Instantiate(StarManager.Instance.lineDrawer, transform.position, Quaternion.identity) as GameObject;
-            _line.GetComponent<LineDrawer>().Draw(this.gameObject, _star.gameObject);
-        }     
-
-        HandleStates();
-    }
-
-    void HandleStates()
-    {
         if (unDiscovered)
         {
             renderer.enabled = false;
@@ -79,7 +65,23 @@ public class Star : MonoBehaviour {
             renderer.enabled = true;
             selectRing.renderer.enabled = true;
             dysonSphere.renderer.enabled = true;
+
+            foreach (Star _star in connections)
+            {
+                if (IsConnectionDrawn(_star))
+                    continue;
+
+                GameObject _line = Instantiate(StarManager.Instance.lineDrawer, transform.position, Quaternion.identity) as GameObject;
+                _line.GetComponent<LineDrawer>().Draw(this.gameObject, _star.gameObject);
+            }
+
+            HandleStates();
         }
+    }
+
+    void HandleStates()
+    {
+
 
 
         switch(state)
@@ -187,7 +189,7 @@ public class Star : MonoBehaviour {
         }
 
         transform.localScale *= Random.Range(StarManager.Instance.starClassSizes[typeNum].x, StarManager.Instance.starClassSizes[typeNum].y);
-        ageXten = Random.Range(StarManager.Instance.starClassLifespans[typeNum].x, StarManager.Instance.starClassLifespans[typeNum].y);
+        ageXten = Random.Range(StarManager.Instance.starClassAges[typeNum].x, StarManager.Instance.starClassAges[typeNum].y);
         selectRing.renderer.material.color = renderer.material.color;
     }
 

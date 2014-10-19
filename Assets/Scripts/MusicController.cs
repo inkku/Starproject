@@ -84,13 +84,13 @@ public class MusicController : MonoBehaviour {
 		case 0:
 			for (int i = 0; i < stemVol.Length; i++) {
 				stemVol[i] = mix1[i];
-				Debug.Log("mix1");
+				//Debug.Log("mix1");
 			}
 			break;
 		case 1:
 			for (int i = 0; i < stemVol.Length; i++) {
 				stemVol[i] = mix2[i];
-				Debug.Log("mix1");
+				//Debug.Log("mix1");
 			}
 			break;
 		case 2:
