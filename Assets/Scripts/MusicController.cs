@@ -17,13 +17,43 @@ public class MusicController : MonoBehaviour {
 	public int stemSelect;
 
 	public float[] stemVol = new float[6]; 
+<<<<<<< Updated upstream
 	public bool[] onBeat = new bool[6];
 
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+	public bool[] isOnTicker = new bool[6];
+=======
+	public bool[] onBeat = new bool[6];
+
+>>>>>>> FETCH_HEAD
+=======
+	public bool[] onBeat = new bool[6];
+
+>>>>>>> FETCH_HEAD
+=======
+	public bool[] onBeat = new bool[6];
+
+>>>>>>> FETCH_HEAD
+>>>>>>> Stashed changes
 
 	// Use this for initialization
 	void Start () {
 
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> FETCH_HEAD
+=======
+>>>>>>> FETCH_HEAD
+>>>>>>> Stashed changes
 /*		myclips = new string[] {"SETIjam00 - ampedUp00.mp3", 
 			"SETIjam00 - bassbasic.mp3",
 			"SETIjam00 - dronySynths00.mp3",
@@ -31,9 +61,11 @@ public class MusicController : MonoBehaviour {
 			"SETIjam00 - midIntense.mp3",
 			"SETIjam00 - pulse00.mp3"};
 */
+>>>>>>> FETCH_HEAD
 		myAudioStems = new AudioSource[6];
 		for (int i=0; i<6; i++)
 		{
+
 			myAudioStems[i]=gameObject.AddComponent("AudioSource") as AudioSource;
 			myAudioStems[i].clip = (AudioClip) myclips[i];
 
@@ -42,8 +74,32 @@ public class MusicController : MonoBehaviour {
 				myAudioStems[i].Play ();
 			}
 		}
+<<<<<<< Updated upstream
 		beatTimer = 0;
 
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+		foreach (AudioSource s in myAudioStems) {
+			s.loop = true;
+			s.panLevel = 0;
+			s.dopplerLevel = 0;
+				}
+		stemVol [2] = 1;
+=======
+		beatTimer = 0;
+
+>>>>>>> FETCH_HEAD
+=======
+		beatTimer = 0;
+
+>>>>>>> FETCH_HEAD
+=======
+		beatTimer = 0;
+
+>>>>>>> FETCH_HEAD
+>>>>>>> Stashed changes
 
 	
 	}
@@ -51,8 +107,32 @@ public class MusicController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+<<<<<<< Updated upstream
 				beatTimer += Time.deltaTime;
 
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+
+		for (int i=0; i<6; i++) {
+			myAudioStems [i].volume = stemVol [i];
+
+		}
+	
+=======
+				beatTimer += Time.deltaTime;
+
+=======
+				beatTimer += Time.deltaTime;
+
+>>>>>>> FETCH_HEAD
+=======
+				beatTimer += Time.deltaTime;
+
+>>>>>>> FETCH_HEAD
+>>>>>>> Stashed changes
 				for (int i=0; i<6; i++) {
 						if (onBeat [i] && beatTimer > (beatsPerTime * 60 / BPM)) {	
 								myAudioStems [i].volume = stemVol [i];
@@ -64,6 +144,16 @@ public class MusicController : MonoBehaviour {
 
 				}
 		}
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
+>>>>>>> FETCH_HEAD
+=======
+>>>>>>> FETCH_HEAD
+>>>>>>> Stashed changes
 //		foreach( audioTrack in myTrackList) {
 
 //		global styrning
