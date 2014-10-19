@@ -30,7 +30,8 @@ public class Star : MonoBehaviour {
     { 
         Connected,
         LocallyConnected,
-        NotConnected
+        NotConnected,
+        Dying
     }
 
     public State state = State.NotConnected;
@@ -113,6 +114,9 @@ public class Star : MonoBehaviour {
                     TurnOnRing(1);
                 else
                     TurnOffRing();
+                break;
+
+            case State.Dying:
                 break;
         }
     }
@@ -213,29 +217,33 @@ public class Star : MonoBehaviour {
     public List<Star> GetReach()
     {
         starsInReach = new List<Star>();
-		float reachForce = 0;
 
-		float connections = StarManager.Instance.totalNumConnections (this);
-//		if (StarManager.Instance.sumConnections(this) > 0) {
-//			reachForce = StarManager.Instance.sumEnergy (this) / StarManager.Instance.sumConnections (this);
-//		}
-
-		Debug.Log ("ReachForce: " + reachForce);
-
-        var _hitColliders = Physics.OverlapSphere(transform.position, range);
-        for (var i = 0; i < _hitColliders.Length; i++)
+        if (state != State.Dying) //Ugly, yes. Working, yes.
         {
-            GameObject _hit = _hitColliders[i].gameObject;
+            float reachForce = 0;
 
-            if ((_hit != gameObject && _hit.GetComponent<Star>())) //if object is a star 
+            float connections = StarManager.Instance.totalNumConnections(this);
+            //		if (StarManager.Instance.sumConnections(this) > 0) {
+            //			reachForce = StarManager.Instance.sumEnergy (this) / StarManager.Instance.sumConnections (this);
+            //		}
+
+            Debug.Log("ReachForce: " + reachForce);
+
+            var _hitColliders = Physics.OverlapSphere(transform.position, range);
+            for (var i = 0; i < _hitColliders.Length; i++)
             {
-                Star _star = _hit.GetComponent<Star>();
-                starsInReach.Add(_star);
+                GameObject _hit = _hitColliders[i].gameObject;
 
-
-                if (_star.unDiscovered)
+                if ((_hit != gameObject && _hit.GetComponent<Star>())) //if object is a star 
                 {
-                    _star.Discover();
+                    Star _star = _hit.GetComponent<Star>();
+                    starsInReach.Add(_star);
+
+
+                    if (_star.unDiscovered)
+                    {
+                        _star.Discover();
+                    }
                 }
             }
         }
@@ -243,11 +251,11 @@ public class Star : MonoBehaviour {
         return starsInReach;
     }
 
-    public bool IsInReach(Star _star)
-    {
-        GetReach();
-        return starsInReach.Contains(_star);
-    }
+    //public bool IsInReach(Star _star)
+    //{
+    //    GetReach();
+    //    return starsInReach.Contains(_star);
+    //}
 
     public void Discover()
     {
@@ -257,7 +265,9 @@ public class Star : MonoBehaviour {
 
     public IEnumerator Die(float _time)
     {
+        state = State.Dying;
         StarManager.Instance.allStars.Remove(this);
+        StarManager.Instance.discoveredStars.Remove(this);
 
         float _timer = 0;
         bool _lock = false;

@@ -7,7 +7,12 @@ public class GameHandler : MonoBehaviour {
     public static GameHandler Instance;
 
 	[HideInInspector] public Star currentStar;
-    [HideInInspector] public Star previousStar; 
+    [HideInInspector] public Star previousStar;
+
+    public static float Score;
+    public static float ScoreMax;
+    public static float clusterBoost;
+    public static float reachForce;
 
 
     void Awake()
@@ -21,16 +26,25 @@ public class GameHandler : MonoBehaviour {
         SetCurrentStar(StarManager.Instance.allStars[0]);
         Debug.Log("AGE: " + currentStar.ageXten);
         StartCoroutine(FindStarsInReach(0.5f));
+
+        Score = ScoreMax = (float)0;
+        clusterBoost = (float)1;
+        reachForce = 1;
     }
 
     void Update()
     {
-        Star _star;
-        if (Input.GetKeyDown(KeyCode.Mouse0) && MouseIsHoveringOver<Star>(out _star))
-		{
-			LeftClickStar(_star.gameObject);
-		}
+        if (currentStar.state != Star.State.Dying)
+        {
+            Star _star;
+            if (Input.GetKeyDown(KeyCode.Mouse0) && MouseIsHoveringOver<Star>(out _star))
+            {
+                LeftClickStar(_star.gameObject);
+            }
 
+            float tempScore = CalculateScore(GameHandler.Instance.currentStar);
+            Debug.Log("SCORE:" + tempScore);
+        }
     }
 
 	public void LeftClickStar(GameObject clickedObject)
@@ -59,12 +73,26 @@ public class GameHandler : MonoBehaviour {
 
 	//************ UTILITY ************
 
+    public float CalculateScore(Star startNode)
+    {
+        float tempScore = StarManager.Instance.SumEnergy(startNode);
+
+        if (StarManager.Instance.clusterDivided == false)
+        {
+            tempScore *= clusterBoost;
+        }
+
+        Debug.Log("SCORE:" + tempScore);
+
+        return (float)tempScore;
+    }
 
 	IEnumerator FindStarsInReach(float _updateFreq)
 	{
 		for (; ; )
 		{
-			currentStar.GetReach();
+            if(currentStar.state != Star.State.Dying)
+			    currentStar.GetReach();
 			yield return new WaitForSeconds(_updateFreq);
 		}
 	}
