@@ -182,7 +182,7 @@ public class Star : MonoBehaviour {
                 break;
         }
 
-        transform.localScale *= StarManager.Instance.starClassSizes[typeNum];
+        transform.localScale *= Random.Range(StarManager.Instance.starClassSizes[typeNum].x, StarManager.Instance.starClassSizes[typeNum].y);
         ageXten = Random.Range(StarManager.Instance.starClassLifespans[typeNum].x, StarManager.Instance.starClassLifespans[typeNum].y);
         selectRing.renderer.material.color = renderer.material.color;
     }

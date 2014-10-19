@@ -13,7 +13,7 @@ public class StarManager : MonoBehaviour {
     public ParticleSystem fx_Death1;
     public ParticleSystem fx_Death2;
 
-    public float[] starClassSizes = new float[7];
+    public Vector2[] starClassSizes = new Vector2[7];
     public float[] starClassEnergies = new float[7];
     public Vector2[] starClassLifespans = new Vector2[7];
     public float[] starClassGravities = new float[7];
