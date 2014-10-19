@@ -25,11 +25,11 @@ public class StarGenerator : MonoBehaviour {
 
     void GenerateNewWorld()
     {
-        List<Vector2> _previousSpawns = new List<Vector2>();
+        List<Vector3> _previousSpawns = new List<Vector3>();
 
         for (int i = 0; i < starAmount; i++)
         {
-            Vector2 _pos = Random.insideUnitCircle * worldRadius;
+            Vector3 _pos = Random.insideUnitSphere * worldRadius;
 
 
             bool _acceptedSpawn = true;
@@ -42,11 +42,11 @@ public class StarGenerator : MonoBehaviour {
                 {
                     if (_loops > 40) break;
 
-                    foreach (Vector2 _oldPos in _previousSpawns)
+                    foreach (Vector3 _oldPos in _previousSpawns)
                     {
-                        if (Vector2.Distance(_pos, _oldPos) <= minDistance)
+                        if (Vector3.Distance(_pos, _oldPos) <= minDistance)
                         {
-                            _pos = Random.insideUnitCircle * worldRadius;
+                            _pos = Random.insideUnitSphere * worldRadius;
                             break;
                         }
 
@@ -59,7 +59,7 @@ public class StarGenerator : MonoBehaviour {
 
             if(_acceptedSpawn)
             {
-                object _tmp = Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
+                object _tmp = Instantiate(star, new Vector3(_pos.x, _pos.y, _pos.z), Quaternion.identity);
                 StarManager.Instance.allStars.Add((_tmp as GameObject).GetComponent<Star>());
 
                 _previousSpawns.Add(_pos);
@@ -70,11 +70,11 @@ public class StarGenerator : MonoBehaviour {
     }
     void AddNewAreas(float _minRadius, float _starAmount)
     {
-        List<Vector2> _previousSpawns = new List<Vector2>();
+        List<Vector3> _previousSpawns = new List<Vector3>();
 
         for (int i = 0; i < _starAmount; i++)
         {
-            Vector2 _pos = Random.insideUnitCircle * (worldRadius + _minRadius);
+            Vector3 _pos = Random.insideUnitSphere * (worldRadius + _minRadius);
 
 
             bool _acceptedSpawn = true;
@@ -87,11 +87,11 @@ public class StarGenerator : MonoBehaviour {
                 {
                     if (_loops > 40) break;
 
-                    foreach (Vector2 _oldPos in _previousSpawns)
+                    foreach (Vector3 _oldPos in _previousSpawns)
                     {
-                        if (Vector2.Distance(_pos, _oldPos) <= minDistance || Vector2.Distance(_pos, Vector2.zero) <= _minRadius)
+                        if (Vector3.Distance(_pos, _oldPos) <= minDistance || Vector3.Distance(_pos, Vector3.zero) <= _minRadius)
                         {
-                            _pos = Random.insideUnitCircle * (worldRadius + _minRadius);
+                            _pos = Random.insideUnitSphere * (worldRadius + _minRadius);
                             break;
                         }
 
@@ -104,7 +104,7 @@ public class StarGenerator : MonoBehaviour {
 
             if(_acceptedSpawn)
             {
-                object _tmp = Instantiate(star, new Vector3(_pos.x, 0, _pos.y), Quaternion.identity);
+                object _tmp = Instantiate(star, new Vector3(_pos.x, _pos.y, _pos.z), Quaternion.identity);
                 StarManager.Instance.allStars.Add((_tmp as GameObject).GetComponent<Star>());
 
                 _previousSpawns.Add(_pos);

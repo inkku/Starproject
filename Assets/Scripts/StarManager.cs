@@ -7,7 +7,7 @@ public class StarManager : MonoBehaviour {
     public static StarManager Instance;
 
     [HideInInspector] public List<Star> allStars = new List<Star>(); //ALL ALL STARS
-    [HideInInspector] public List<List<Star>> starClusters = new List<List<Star>>(); //Not used right now
+    [HideInInspector] public List<Star> discoveredStars = new List<Star>();
 
 	public static float Score;
 	public static float ScoreMax;
@@ -15,21 +15,16 @@ public class StarManager : MonoBehaviour {
 	public static float reachForce;
 
     public GameObject lineDrawer;
+    public ParticleSystem fx_Death1;
+    public ParticleSystem fx_Death2;
 
-    public Texture2D[] starClasstextures = new Texture2D[7];
     public float[] starClassSizes = new float[7];
     public float[] starClassEnergies = new float[7];
+    public Vector2[] starClassLifespans = new Vector2[7];
     public float[] starClassGravities = new float[7];
     public float[] starClassProbabilities = new float[7];
 
-		
-	//PARAMETERS THAT DRIVE THE MUSIC
-	public int[] nrStarsOfType;
-	public int[] nrStarsOfTypeWithinRange;
-	
-	public float EnergyMax;
-
-	public bool clusterDivided;
+	[HideInInspector] public bool clusterDivided;
 
     void Awake()
     {
@@ -41,24 +36,15 @@ public class StarManager : MonoBehaviour {
     {
 		Score = ScoreMax = (float) 0;
 		clusterBoost = (float)1 ;
-        //StartCoroutine(UpdateStarAges(1f));
+        StartCoroutine(UpdateStarAges(0.3f));
 		clusterDivided = false;
 		reachForce = 1;
-		EnergyMax = 0;
 	}
 
 	void Update()
 	{
 		float tempScore=calculateScore(GameHandler.Instance.currentStar);
 		Debug.Log ("SCORE:" + tempScore);
-
-		if (sumEnergy (GameHandler.Instance.currentStar) > EnergyMax) {
-			EnergyMax = sumEnergy (GameHandler.Instance.currentStar);
-		}
-
-		nrStarsOfType = calculateTypes(this.GetStarCluster(GameHandler.Instance.currentStar));
-		nrStarsOfTypeWithinRange = calculateTypes (GameHandler.Instance.currentStar.GetReach());
-
 	}
 
 	
@@ -81,18 +67,26 @@ public class StarManager : MonoBehaviour {
 
 
 
-    //IEnumerator UpdateStarAges(float _updateFreq)
-    //{
-    //    for (; ;)
-    //    {
-    //        foreach (Star _star in allStars)
-    //        {
-    //            //Update age for each star
-    //        }
+    IEnumerator UpdateStarAges(float _updateFreq)
+    {
+        for (; ; )
+        {
+            for (int i = 0; i < allStars.Count; i++)
+            {
+                if (allStars[i].unDiscovered)
+                    continue;
 
-    //        yield return new WaitForSeconds(_updateFreq);
-    //    }
-    //}
+                allStars[i].ageXten += Time.deltaTime;
+
+                if (allStars[i].ageXten > StarManager.Instance.starClassLifespans[allStars[i].typeNum].y)
+                {
+                    StartCoroutine(allStars[i].Die(1f));
+                }
+            }
+
+            yield return new WaitForSeconds(_updateFreq);
+        }
+    }
 
 
 	public List<Star> GetStarCluster (Star startNode) 
@@ -114,7 +108,7 @@ public class StarManager : MonoBehaviour {
 			}
 		}
 
-//		Debug.Log ("GetStarCluster: number of all connecteds in current network " + connectedTemp.Count);
+		Debug.Log ("GetStarCluster: number of all connecteds in current network " + connectedTemp.Count);
 		return connectedTemp;
 	}
 
@@ -153,10 +147,9 @@ public class StarManager : MonoBehaviour {
 			
 		}
 		//return lengthConnections /2;
-//		Debug.Log ("totalNumConnections in whole cluster: " + numConnections/2);
+		Debug.Log ("totalNumConnections in whole cluster: " + numConnections/2);
 		return numConnections / 2;
 	}
-
 
 	//************* private utility functions ************
 
@@ -172,18 +165,5 @@ public class StarManager : MonoBehaviour {
 				FloodConnected(_star);
 			}
 		}
-	}
-
-	private int[] calculateTypes(List<Star> starCollection)
-	{
-		int[] resultList= new int[7];
-
-		foreach (Star _star in starCollection)
-		{
-			resultList[(int)_star.type]+=1;
-		}
-
-		Debug.Log ("starCollection result list " + resultList.ToString ());
-		return resultList;
 	}
 }

@@ -1,79 +1,25 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class Star : MonoBehaviour {
 
     public enum Type { cl0, cl1, cl2, cl3, cl4, cl5, cl6 }
     public Type type;
+    public int typeNum;
 	
     public List<Star> connections;
-	public float age;
+	public float ageXten;
 	public bool reached;
+    public bool unDiscovered = true;
 
 	public float energy
-
 	{	  
-        get
-        {
-            switch (type)
-            {
-                case Type.cl0:
-                    return StarManager.Instance.starClassEnergies[0];
-
-                case Type.cl1:
-                    return StarManager.Instance.starClassEnergies[1];
-
-                case Type.cl2:
-                    return StarManager.Instance.starClassEnergies[2];
-
-                case Type.cl3:
-                    return StarManager.Instance.starClassEnergies[3];
-
-                case Type.cl4:
-                    return StarManager.Instance.starClassEnergies[4];
-
-                case Type.cl5:
-                    return StarManager.Instance.starClassEnergies[5];
-
-                case Type.cl6:
-                    return StarManager.Instance.starClassEnergies[6];
-
-                default:
-                    return 0;
-            }
-        }
+        get { return StarManager.Instance.starClassEnergies[typeNum]; }
     }
     public float range
     {
-        get
-        {
-            switch (type)
-            {
-                case Type.cl0:
-                    return StarManager.Instance.starClassGravities[0];
-
-                case Type.cl1:
-                    return StarManager.Instance.starClassGravities[1];
-
-                case Type.cl2:
-                    return StarManager.Instance.starClassGravities[2];
-
-                case Type.cl3:
-                    return StarManager.Instance.starClassGravities[3];
-
-                case Type.cl4:
-                    return StarManager.Instance.starClassGravities[4];
-
-                case Type.cl5:
-                    return StarManager.Instance.starClassGravities[5];
-
-                case Type.cl6:
-                    return StarManager.Instance.starClassGravities[6];
-
-                default:
-                    return 0;
-            }
-        }
+        get { return StarManager.Instance.starClassGravities[typeNum]; }
     }
 
     public GameObject dysonSphere;
@@ -92,7 +38,6 @@ public class Star : MonoBehaviour {
     public List<Star> starsInReach;
 
     public bool current;
-
 
     void Start()
     {
@@ -118,6 +63,21 @@ public class Star : MonoBehaviour {
 
     void HandleStates()
     {
+        if (unDiscovered)
+        {
+            renderer.enabled = false;
+            selectRing.renderer.enabled = false;
+            dysonSphere.renderer.enabled = false;
+        }
+
+        else
+        {
+            renderer.enabled = true;
+            selectRing.renderer.enabled = true;
+            dysonSphere.renderer.enabled = true;
+        }
+
+
         switch(state)
         {
             case State.NotConnected:
@@ -132,6 +92,9 @@ public class Star : MonoBehaviour {
             case State.Connected:
                 dysonSphere.SetActive(true);
 
+                if (unDiscovered)
+                    Discover();
+
                 if (GameHandler.Instance.currentStar == this)
                     TurnOnRing(2);
 			else if (GameHandler.Instance.currentStar.starsInReach.Contains(this) || (GameHandler.Instance.previousStar == this))
@@ -142,6 +105,9 @@ public class Star : MonoBehaviour {
 
             case State.LocallyConnected:
                 dysonSphere.SetActive(true);
+
+                if (unDiscovered)
+                    Discover();
 
                 if (GameHandler.Instance.currentStar.starsInReach.Contains(this))
                     TurnOnRing(1);
@@ -170,55 +136,50 @@ public class Star : MonoBehaviour {
         {
             case Type.cl0:
                 name = "Type-M Star";
-                transform.localScale *= StarManager.Instance.starClassSizes[0];
-                age = Random.Range(0, 13.0f);
+                typeNum = 0;
                 renderer.material.color = new Color(1, 0.160f, 0.1f); //red
                 break;
 
             case Type.cl1:
                 name = "Type-K Star";
-                transform.localScale *= StarManager.Instance.starClassSizes[1];
-                age = Random.Range(0, 13.0f);
+                typeNum = 1;
                 renderer.material.color = new Color(1, 0.5f, 0.1f); //orange
                 break;
                 
             case Type.cl2:
                 name = "Type-G Star";
-                transform.localScale *= StarManager.Instance.starClassSizes[2];
-                age = Random.Range(0, 9.0f);
+                typeNum = 2;
                 renderer.material.color = new Color(1, 0.8f, 0.1f); //yellow
                 break;
 
             case Type.cl3:
                 name = "Type-F Star";
-                transform.localScale *= StarManager.Instance.starClassSizes[3];
-                age = Random.Range(0, 5.0f);
+                typeNum = 3;
                 renderer.material.color = Color.white;
                 break;
 
             case Type.cl4:
                 name = "Type-A Star";
-                transform.localScale *= StarManager.Instance.starClassSizes[4];
-                age = Random.Range(0, 4.0f);
+                typeNum = 4;
                 renderer.material.color = new Color(0.94f, 0.97f, 0.97f); //white-ish
                 break;
 
             case Type.cl5:
                 name = "Type-B Star";
-                transform.localScale *= StarManager.Instance.starClassSizes[5];
-                age = Random.Range(0, 3.0f);
+                typeNum = 5;
                 renderer.material.color = new Color(0.75f, 0.95f, 0.95f); //cyan
                 break;
 
 
             case Type.cl6:
                 name = "Type-O Star";
-                transform.localScale *= StarManager.Instance.starClassSizes[6];
-                age = Random.Range(0, 2.0f);
+                typeNum = 6;
                 renderer.material.color = new Color(0.33f, 0.64f, 0.89f); //blue
                 break;
         }
 
+        transform.localScale *= StarManager.Instance.starClassSizes[typeNum];
+        ageXten = Random.Range(StarManager.Instance.starClassLifespans[typeNum].x, StarManager.Instance.starClassLifespans[typeNum].y);
         selectRing.renderer.material.color = renderer.material.color;
     }
 
@@ -270,6 +231,12 @@ public class Star : MonoBehaviour {
             {
                 Star _star = _hit.GetComponent<Star>();
                 starsInReach.Add(_star);
+
+
+                if (_star.unDiscovered)
+                {
+                    _star.Discover();
+                }
             }
         }
 
@@ -280,5 +247,63 @@ public class Star : MonoBehaviour {
     {
         GetReach();
         return starsInReach.Contains(_star);
+    }
+
+    public void Discover()
+    {
+        unDiscovered = false;
+        StarManager.Instance.discoveredStars.Add(this);
+    }
+
+    public IEnumerator Die(float _time)
+    {
+        StarManager.Instance.allStars.Remove(this);
+
+        float _timer = 0;
+        bool _lock = false;
+
+        while(_timer < _time)
+        {
+            transform.localScale *= (1 + Time.deltaTime);
+
+            iTween.ColorTo(gameObject, Color.white, _time);
+            iTween.ShakePosition(gameObject, new Vector3(0.1f, 0.1f, 0.1f), Time.deltaTime);
+
+            if (_timer >= _time / 2 && _lock == false)
+            {
+                _lock = true;
+                ParticleSystem _pSys1 = Instantiate(StarManager.Instance.fx_Death1, transform.position, Quaternion.identity) as ParticleSystem;
+                ParticleSystem _pSys2 = Instantiate(StarManager.Instance.fx_Death2, transform.position, Quaternion.identity) as ParticleSystem;
+
+                _pSys1.Play();
+                _pSys2.Play();
+            }
+
+            yield return null;
+           _timer += Time.deltaTime;
+        }
+
+        UnloadConnections();
+        Destroy(gameObject);
+    }
+
+    void UnloadConnections()
+    { 
+        foreach(Star _star in connections)
+        {
+            _star.connections.Remove(this);
+        }
+
+        connections.Clear();
+
+        for (int i = 0; i < LineDrawer.all.Count; i++)
+        {
+            if (LineDrawer.all[i].target == this || LineDrawer.all[i].origin == this)
+            {
+                Destroy(LineDrawer.all[i]);
+                LineDrawer.all.RemoveAt(i);
+                i--;
+            }
+        }
     }
 }

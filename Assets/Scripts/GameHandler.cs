@@ -6,10 +6,8 @@ public class GameHandler : MonoBehaviour {
 
     public static GameHandler Instance;
 
-
-//	public int connectedStars;
-	public Star currentStar;
-    public Star previousStar; 
+	[HideInInspector] public Star currentStar;
+    [HideInInspector] public Star previousStar; 
 
 
     void Awake()
@@ -21,7 +19,7 @@ public class GameHandler : MonoBehaviour {
     void Start()
     {
         SetCurrentStar(StarManager.Instance.allStars[0]);
-		Debug.Log ("AGE: " + currentStar.age);
+        Debug.Log("AGE: " + currentStar.ageXten);
         StartCoroutine(FindStarsInReach(0.5f));
     }
 
@@ -29,14 +27,8 @@ public class GameHandler : MonoBehaviour {
     {
         Star _star;
         if (Input.GetKeyDown(KeyCode.Mouse0) && MouseIsHoveringOver<Star>(out _star))
-        {
-            LeftClickStar(_star.gameObject);
-        }
-
-		else if (Input.GetKeyDown(KeyCode.Mouse1) && MouseIsHoveringOver<Star>(out _star))
 		{
-			RightClickStar(_star.gameObject);
-
+			LeftClickStar(_star.gameObject);
 		}
 
     }
@@ -50,7 +42,8 @@ public class GameHandler : MonoBehaviour {
 
 	    Star clickedStar = clickedObject.GetComponent<Star>();
 
-		if(currentStar.connections.Contains(clickedStar) || (currentStar.starsInReach.Contains(clickedStar)))
+		// within reach
+		if (currentStar.starsInReach.Contains(clickedStar))
 		{
 			SetPreviousStar(currentStar);
 			SetCurrentStar(clickedStar);
@@ -61,13 +54,6 @@ public class GameHandler : MonoBehaviour {
 				currentStar.connections.Add(previousStar);
 			}
 		}
-	}
-
-	public void RightClickStar(GameObject clickedObject)
-	{
-		// If within reach && within system -> show stat window
-		//clickedObject.renderer.material.color = Color.red;
-
 	}
 
 
@@ -125,8 +111,10 @@ public class GameHandler : MonoBehaviour {
         _star.state = Star.State.Connected;
         currentStar.current = true;
 
-        //Camera.main.GetComponent<SmoothFollow>().target = currentStar.transform;
-        //Camera.main.GetComponent<SmoothLookAt>().target = currentStar.transform;
+        if (currentStar.unDiscovered)
+        {
+            currentStar.Discover();
+        }
     }
 
 	public void SetPreviousStar(Star _star)
