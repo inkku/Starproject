@@ -8,12 +8,21 @@ public class MusicController : MonoBehaviour {
 	public AudioClip[] myclips;
 
 
+	public int beatsPerTime=4;
+	public int BPM = 125;
+
+	public float beatTimer;
+
+
 	public int stemSelect;
 
 	public float[] stemVol = new float[6]; 
+	public bool[] onBeat = new bool[6];
+
 
 	// Use this for initialization
 	void Start () {
+
 
 /*		myclips = new string[] {"SETIjam00 - ampedUp00.mp3", 
 			"SETIjam00 - bassbasic.mp3",
@@ -33,29 +42,28 @@ public class MusicController : MonoBehaviour {
 				myAudioStems[i].Play ();
 			}
 		}
-
-/*		AudioSource
-		myAudioStems[0].clip = Resources.Load("Audio/Music Stems/SETIjam00 - ampedUp00.mp3") as AudioClip;
-		myAudioStems[1].clip = Resources.Load("Audio/Music Stems/SETIjam00 - bassbasic.mp3") as AudioClip;
-		myAudioStems[2].clip = Resources.Load("Audio/Music Stems/SETIjam00 - dronySynths00.mp3") as AudioClip;
-		myAudioStems[3].clip = Resources.Load("Audio/Music Stems/SETIjam00 - hiPerc00.mp3") as AudioClip;
-		myAudioStems[4].clip = Resources.Load("Audio/Music Stems/SETIjam00 - midIntense.mp3") as AudioClip;
-		myAudioStems[5].clip = Resources.Load("Audio/Music Stems/SETIjam00 - pulse00.mp3") as AudioClip;
-*/
+		beatTimer = 0;
 
 
-	//	AudioSource[] myTrackList = new AudioSource[];
 	
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		for (int i=0; i<6; i++) {
-			myAudioStems [i].volume = stemVol [i];
-		}
+				beatTimer += Time.deltaTime;
 
-	
+				for (int i=0; i<6; i++) {
+						if (onBeat [i] && beatTimer > (beatsPerTime * 60 / BPM)) {	
+								myAudioStems [i].volume = stemVol [i];
+								Debug.Log ("BEAT");
+								beatTimer = 0;
+						} else if (!onBeat [i]) {
+								myAudioStems [i].volume = stemVol [i];
+						}
+
+				}
+		}
 //		foreach( audioTrack in myTrackList) {
 
 //		global styrning
@@ -81,6 +89,6 @@ public class MusicController : MonoBehaviour {
 			-> Alla igång, volymkontroll
 */
 
-	}
+	
 
 }
